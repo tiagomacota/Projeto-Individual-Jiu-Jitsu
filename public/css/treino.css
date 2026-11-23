@@ -1,0 +1,189 @@
+/* ==========================================================================
+   TREINO.CSS  —  usado só em dashboard/treino.html  (carregar DEPOIS do painel.css)
+   ========================================================================== */
+
+.link-mural { color: var(--crimson-accent); font-weight: 700; text-decoration: none; }
+.link-mural:hover { text-decoration: underline; }
+
+.titulo-etapa {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 800;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #ffffff;
+  margin-bottom: 14px;
+}
+
+/* ---------- Dados pessoais ---------- */
+.dados-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 18px;
+}
+
+.dados-campo { display: flex; flex-direction: column; gap: 4px; }
+.dados-campo span { font-size: 12px; font-weight: 500; color: #d1d1d1; }
+.dados-campo input[type="text"] { width: 260px; }
+.dados-campo input[type="number"] { width: 110px; }
+
+/* ---------- Cards de perfil (ficha técnica) ---------- */
+.perfis-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.perfil-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--painel-card);
+  border: 1px solid #3a1518;
+  border-radius: 10px;
+  padding: 22px 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
+  transition: border-color 0.3s, transform 0.3s;
+}
+
+.perfil-card:hover { border-color: var(--vermelho-tas); }
+
+/* Perfil escolhido fica em destaque */
+.perfil-card.selecionado {
+  border: 2px solid var(--dourado-titulo);
+  transform: translateY(-4px);
+}
+
+.perfil-topo { min-height: 84px; }
+
+.selo {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+  background-color: #1d1d1d;
+  color: var(--texto-suave);
+}
+
+.perfil-card.selecionado .selo { background-color: var(--dourado-titulo); color: #111; }
+
+.perfil-topo h3 { font-size: 1.9rem; line-height: 1.1; }
+.perfil-apelido { font-style: italic; color: var(--texto-suave); margin-top: 2px; }
+
+.perfil-para-quem {
+  margin: 14px 0;
+  min-height: 3em;
+  line-height: 1.45;
+  font-size: 0.95rem;
+}
+
+.ficha { margin-bottom: 14px; }
+
+.ficha-linha {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid #262626;
+  font-size: 0.9rem;
+}
+
+.ficha-linha dt { color: var(--texto-suave); }
+.ficha-linha dd { text-align: right; font-weight: 600; }
+
+/* Barras de exigência / velocidade (ex.: 2 de 3) */
+.barras { display: inline-flex; gap: 4px; vertical-align: middle; margin-right: 6px; }
+.barras i { width: 18px; height: 8px; border-radius: 2px; background-color: #333; }
+.barras i.on { background-color: var(--crimson-accent); }
+
+/* Tabela tempo x treinos até cada faixa */
+.ficha-faixas {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+}
+
+.ficha-faixas th {
+  text-align: right;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--texto-suave);
+  font-weight: 700;
+  padding: 4px 0 6px;
+}
+
+.ficha-faixas th:first-child, .ficha-faixas td:first-child { text-align: left; }
+.ficha-faixas td { text-align: right; padding: 6px 0; border-top: 1px solid #262626; }
+
+.bolinha-faixa {
+  display: inline-block;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  margin-right: 6px;
+  border: 1px solid #777;
+}
+.bolinha-faixa.branca { background: #f5f5f5; }
+.bolinha-faixa.azul { background: var(--azul-faixa); }
+.bolinha-faixa.roxa { background: var(--roxa-faixa); }
+.bolinha-faixa.marrom { background: var(--marrom-faixa); }
+.bolinha-faixa.preta { background: #000; border-color: var(--dourado-titulo); }
+
+.ficha-total {
+  font-weight: 800;
+  text-align: center;
+  padding: 10px 0;
+  margin-bottom: 8px;
+  color: var(--dourado-titulo);
+  font-size: 1.05rem;
+}
+
+.selo-ibjjf {
+  font-size: 0.76rem;
+  color: var(--texto-suave);
+  line-height: 1.4;
+  margin-bottom: 14px;
+}
+
+.selo-ibjjf .alerta { color: var(--amarelo); display: block; margin-top: 4px; }
+
+.perfil-card .btn-tas { margin-top: auto; width: 100%; }
+
+/* ---------- Semanas ---------- */
+.semana-linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid #262626;
+}
+
+.semana-linha.atual { border-left: 3px solid var(--crimson-accent); padding-left: 12px; }
+
+.semana-rotulo { flex: 1 1 340px; font-size: 0.95rem; }
+.semana-rotulo .tag-atual {
+  font-size: 0.65rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
+  background: var(--crimson-accent); color: #fff; padding: 2px 7px; border-radius: 10px; margin-left: 6px;
+}
+
+.semana-linha input[type="number"] { width: 80px; }
+.semana-meta { flex: 1 1 260px; color: var(--texto-suave); font-size: 0.92rem; }
+.semana-meta b { color: #fff; }
+.semana-meta .pct { font-weight: 800; }
+.semana-meta .ok-registro { color: var(--verde); margin-left: 8px; }
+.semana-aviso { flex-basis: 100%; font-size: 0.85rem; }
+
+#btn_mais_semanas { margin-top: 16px; }
+
+@media (max-width: 1300px) {
+  .perfis-grid { grid-template-columns: 1fr; }
+  .perfil-card.selecionado { transform: none; }
+  .perfil-topo, .perfil-para-quem { min-height: 0; }
+}
+.ficha-faixas td:first-child { white-space: nowrap; }

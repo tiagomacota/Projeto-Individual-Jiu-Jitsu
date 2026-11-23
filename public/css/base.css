@@ -1,0 +1,152 @@
+/* ==========================================================================
+   BASE.CSS  —  carregado em TODAS as páginas
+   Contém só o que é comum ao site inteiro: fontes, variáveis, reset,
+   container, cabeçalho/navbar e rodapés.
+   NÃO coloque aqui nada que seja específico de uma página.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,700;0,800;1,400&family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+:root {
+  --tamanho-header: 90px;
+  --tamanho-footer: 65px;
+  --vermelho-tas: #8C1C22;
+  --vermelho-vinho: #7a1c1c;
+  --crimson-accent: #ED145B;
+  --preto-fosco: #0b0b0b;
+  --cor-areia: #f5f2eb;
+  --dourado-titulo: #e2c08d;
+}
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--preto-fosco);
+  color: var(--cor-areia);
+  font-family: 'Barlow', 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+h1, h2, h3 {
+  font-family: 'Playfair Display', serif;
+  color: var(--dourado-titulo);
+}
+
+.container {
+  display: flex;
+  width: 80%;
+  margin: auto;
+}
+
+/* Título de seção (usado na Home e na Minha Trajetória) */
+.titulo-secao {
+  font-family: 'Playfair Display', serif;
+  color: var(--dourado-titulo);
+  font-size: 2.8rem;
+  margin-bottom: 30px;
+  letter-spacing: 1.5px;
+}
+
+/* --------------------------------------------------------------------------
+   Cabeçalho e navbar
+   -------------------------------------------------------------------------- */
+.header {
+  height: var(--tamanho-header);
+  border-bottom: 2px solid var(--vermelho-tas);
+  background-color: var(--preto-fosco);
+}
+
+.header .container {
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+
+.logo-container {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  height: 100%;
+  gap: 10px;
+}
+
+.logo-image {
+  height: 90px;
+  width: 180px;
+  display: block;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  list-style: none;
+  color: #dfc187;
+}
+
+.navbar a,
+.header a {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #dfc187;
+  font-size: 0.85rem;
+  letter-spacing: 1.5px;
+  white-space: nowrap;
+  transition: color 0.3s;
+}
+
+.navbar a:hover {
+  color: var(--crimson-accent);
+}
+
+/* Link da página atual.
+   Precisa de "a.agora" porque ".navbar a" tem mais peso que ".agora" sozinho. */
+.navbar a.agora {
+  font-weight: 800;
+  color: var(--crimson-accent);
+}
+
+.divider {
+  color: var(--vermelho-vinho);
+}
+
+/* --------------------------------------------------------------------------
+   Rodapés
+   -------------------------------------------------------------------------- */
+.footer {                       /* vermelho: login e cadastro */
+  background-color: var(--vermelho-tas);
+  height: var(--tamanho-footer);
+  color: #fff;
+  display: flex;
+  font-size: 15px;
+}
+
+.footer .container {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.footer-tas {                   /* escuro: home e minha trajetória */
+  text-align: center;
+  padding: 30px;
+  background-color: #050505;
+  border-top: 1px solid #222;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+@media (max-width: 900px) {
+  .header .container,
+  .navbar {
+    padding: 10px 20px;
+  }
+}

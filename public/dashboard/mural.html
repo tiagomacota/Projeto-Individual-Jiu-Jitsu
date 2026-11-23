@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TAS | Mural</title>
+
+    <script src="../js/sessao.js"></script>
+    <script src="../js/tas-util.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/painel.css">
+    <link rel="stylesheet" href="../css/mural.css">
+    <link rel="icon" href="../assets/icon/favicon2.ico">
+</head>
+
+<body class="painel-body" onload="validarSessao(); iniciarMural();">
+
+    <div class="painel-layout">
+
+    <!-- Menu lateral -->
+    <aside class="sidebar">
+        <nav class="sidebar-menu">
+            <a href="../index.html" class="sidebar-logo">
+                <img src="../assets/imgs/logotipo.png" alt="Logo TAS" class="logo-image">
+            </a>
+            <a href="treino.html" class="sidebar-item">Treino</a>
+            <a href="mural.html" class="sidebar-item ativo">Mural</a>
+            <div class="sidebar-user">
+                <span>Olá,</span>
+                <strong id="b_usuario">usuário</strong>
+            </div>
+            <a href="#" class="sidebar-item sair" onclick="limparSessao(); return false;">Sair</a>
+        </nav>
+    </aside>
+
+    <main class="painel-main">
+
+        <div class="painel-titulo">
+            <h1>Mural</h1>
+            <p id="subtitulo_mural">Como você está na perspectiva de progressão no Jiu-Jitsu?</p>
+        </div>
+
+        <!-- Mensagem quando ainda não há perfil -->
+        <div class="painel-card estado-vazio" id="mural_vazio" style="display: none;">
+            Você ainda não escolheu um perfil de treino.<br>
+            Vá até a aba <a href="treino.html">Treino</a>, escolha o seu perfil e registre suas semanas para ver o seu progresso aqui.
+        </div>
+
+        <div id="mural_conteudo" style="display: none;">
+
+            <!-- KPIs -->
+            <section class="kpi-row">
+
+                <!-- 1. Próxima faixa -->
+                <div class="painel-card kpi">
+                    <h2 id="kpi_titulo_faixa">Próxima faixa</h2>
+                    <div class="kpi-valor" id="kpi_faltam">--</div>
+                    <div class="barra-fundo"><div class="barra-preench verde" id="kpi_barra_faixa"></div></div>
+                    <div class="legendas-barra">
+                        <span id="kpi_leg_atual">Branca (atual)</span>
+                        <span id="kpi_leg_pct">0% concluído</span>
+                        <span id="kpi_leg_prox">Azul (próxima)</span>
+                    </div>
+                    <p class="kpi-apoio" id="kpi_apoio_faixa"></p>
+                </div>
+
+                <!-- 2. Meta mensal -->
+                <div class="painel-card kpi">
+                    <h2>Meta de treinos mensal</h2>
+                    <div class="kpi-valor"><span id="kpi_treinos_mes">0</span> / <span id="kpi_meta_mes">0</span></div>
+                    <div class="barra-fundo"><div class="barra-preench" id="kpi_barra_meta"></div></div>
+                    <p class="kpi-apoio" id="kpi_falta_meta"></p>
+                </div>
+
+                <!-- 3. Comparativo com o mês anterior -->
+                <div class="painel-card kpi">
+                    <h2>Comparativo com o mês anterior</h2>
+                    <div class="kpi-valor" id="kpi_comp_valor">--</div>
+                    <p class="kpi-apoio" id="kpi_comp_periodo"></p>
+                    <p class="kpi-apoio" id="kpi_comp_detalhe"></p>
+                </div>
+
+            </section>
+
+            <!-- Gráficos -->
+            <section class="graficos-row">
+                <div class="painel-card">
+                    <h2>Aproveitamento mensal <small>meses por cor</small></h2>
+                    <div class="rosca-area">
+                        <div class="canvas-rosca"><canvas id="grafico_rosca"></canvas></div>
+                        <ul class="legenda-rosca" id="legenda_rosca"></ul>
+                    </div>
+                    <p class="estado-vazio" id="rosca_vazio" style="display: none;">Registre semanas na aba Treino para ver o aproveitamento por mês.</p>
+                </div>
+
+                <div class="painel-card">
+                    <h2>Treinos por semana <small>últimas 12 semanas</small></h2>
+                    <div class="canvas-barras"><canvas id="grafico_semanas"></canvas></div>
+                </div>
+            </section>
+
+            <!-- Jornada das faixas -->
+            <section class="painel-card">
+                <h2>A jornada das faixas <small id="jornada_sub"></small></h2>
+                <div class="jornada" id="jornada"></div>
+                <p class="jornada-nota">Tempo e treinos calculados para o seu perfil atual. Os selos "IBJJF" são só referência e não alteram as contas.</p>
+            </section>
+
+            <!-- Comparativo de perfis -->
+            <section class="painel-card">
+                <h2>Quanto tempo cada perfil leva até a faixa preta</h2>
+                <div id="comparativo_perfis"></div>
+            </section>
+
+        </div>
+    </main>
+
+    </div>
+
+    <footer class="footer-tas">
+        <p>&copy; 2026 TAS - Templo da Arte Suave. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="../js/mural.js"></script>
+</body>
+
+</html>

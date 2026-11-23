@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TAS | Treino</title>
+
+    <script src="../js/sessao.js"></script>
+    <script src="../js/tas-util.js"></script>
+
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/painel.css">
+    <link rel="stylesheet" href="../css/treino.css">
+    <link rel="icon" href="../assets/icon/favicon2.ico">
+</head>
+
+<body class="painel-body" onload="validarSessao(); iniciarTreino();">
+
+    <div class="painel-layout">
+
+    <!-- Menu lateral -->
+    <aside class="sidebar">
+        <nav class="sidebar-menu">
+            <a href="../index.html" class="sidebar-logo">
+                <img src="../assets/imgs/logotipo.png" alt="Logo TAS" class="logo-image">
+            </a>
+            <a href="treino.html" class="sidebar-item ativo">Treino</a>
+            <a href="mural.html" class="sidebar-item">Mural</a>
+            <div class="sidebar-user">
+                <span>Olá,</span>
+                <strong id="b_usuario">usuário</strong>
+            </div>
+            <a href="#" class="sidebar-item sair" onclick="limparSessao(); return false;">Sair</a>
+        </nav>
+    </aside>
+
+    <main class="painel-main">
+
+        <div class="painel-titulo">
+            <h1>Treino</h1>
+            <p>Escolha o perfil que combina com a sua rotina e registre quantos treinos você fez em cada semana.
+                O <a href="mural.html" class="link-mural">Mural</a> usa esses dados para mostrar quanto falta para a próxima faixa.</p>
+        </div>
+
+        <!-- 1. Dados pessoais -->
+        <section class="painel-card" id="secao_dados">
+            <h2>1. Seus dados</h2>
+            <div class="dados-form">
+                <label class="dados-campo">
+                    <span>Nome</span>
+                    <input type="text" id="input_nome" maxlength="50" placeholder="Seu nome">
+                </label>
+                <label class="dados-campo">
+                    <span>Idade</span>
+                    <input type="number" id="input_idade" min="1" max="120" placeholder="Ex.: 20">
+                </label>
+                <button class="btn-tas secundario" id="btn_salvar_dados" onclick="salvarDados()">Salvar dados</button>
+            </div>
+            <div class="msg" id="msg_idade"></div>
+            <div class="msg" id="msg_dados"></div>
+        </section>
+
+        <!-- 2. Escolha do perfil -->
+        <section>
+            <h2 class="titulo-etapa">2. Escolha seu perfil</h2>
+            <div class="perfis-grid" id="perfis_grid">
+                <div class="carregando">Carregando perfis...</div>
+            </div>
+            <div class="msg" id="msg_perfil"></div>
+        </section>
+
+        <!-- 3. Progresso semanal (só aparece depois de escolher o perfil) -->
+        <section class="painel-card" id="secao_semanas" style="display: none;">
+            <h2>3. Progresso semanal <small>semana de domingo a sábado</small></h2>
+            <div id="lista_semanas"></div>
+            <button class="btn-tas secundario" id="btn_mais_semanas" onclick="mostrarMaisSemanas()">Mostrar semanas anteriores</button>
+            <div class="msg" id="msg_semanas"></div>
+        </section>
+
+    </main>
+
+    </div>
+
+    <footer class="footer-tas">
+        <p>&copy; 2026 TAS - Templo da Arte Suave. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="../js/treino.js"></script>
+</body>
+
+</html>

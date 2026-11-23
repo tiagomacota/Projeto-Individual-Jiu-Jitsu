@@ -1,0 +1,272 @@
+/* ==========================================================================
+   TRAJETORIA.CSS  —  usado só em minhatrajetoria.html
+   (carregar DEPOIS do base.css)
+   Aqui .hero-title / .hero-subtitle são o título da página, e NÃO o
+   "ARTE SUAVE" gigante da Home — por isso eles ficam em arquivos separados.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. HERO "MINHA TRAJETÓRIA"
+   -------------------------------------------------------------------------- */
+.hero-trajetoria {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 40px;
+  padding: 80px 50px;
+  border-bottom: 1px solid var(--vermelho-vinho);
+  position: relative;
+  background: linear-gradient(135deg, var(--preto-fosco) 60%, #150a0a 100%);
+}
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  color: var(--dourado-titulo);
+  letter-spacing: 2px;
+  line-height: 1.1;
+  margin-bottom: 20px;
+}
+
+.hero-subtitle {
+  font-family: 'Barlow', sans-serif;
+  font-size: 1.2rem;
+  color: #e0e0e0;
+  line-height: 1.6;
+  max-width: 480px;
+}
+
+.hero-image-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+.hero-img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.7));
+}
+
+/* --------------------------------------------------------------------------
+   2. SEÇÃO "O COMEÇO"
+   (.decoracao-nuvem e .container-conteudo existiam no HTML, mas não tinham CSS)
+   -------------------------------------------------------------------------- */
+.secao-comeco {
+  position: relative;
+  padding: 100px 50px;
+  background: radial-gradient(circle at center, #0f1d30 0%, #080f1a 70%, var(--preto-fosco) 100%);
+  border-bottom: 1px solid var(--vermelho-vinho);
+  text-align: center;
+  overflow: hidden;
+}
+
+.container-conteudo {
+  position: relative;
+  z-index: 2;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.decoracao-nuvem {
+  position: absolute;
+  width: 220px;
+  height: 120px;
+  z-index: 1;
+  background-repeat: no-repeat;
+  background-size: contain;
+  /* TODO: aponte para a imagem da nuvem dourada, ex.:
+     background-image: url('../assets/imgs/nuvem-dourada.png'); */
+}
+
+.decoracao-nuvem.top-left  { top: 20px; left: 20px; }
+.decoracao-nuvem.top-right { top: 20px; right: 20px; transform: scaleX(-1); }
+
+.faixa-branca-container { margin: 30px 0; }
+
+.img-faixa {
+  max-width: 350px;
+  opacity: 0.95;
+}
+
+.texto-bloco {
+  max-width: 650px;
+  margin: 0 auto;
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #d1cbc1;
+}
+
+.texto-bloco p { margin-bottom: 15px; }
+
+/* --------------------------------------------------------------------------
+   3. SEÇÃO "O CAMINHO"
+   -------------------------------------------------------------------------- */
+.secao-caminho {
+  padding: 100px 50px;
+  background-color: var(--preto-fosco);
+  border-bottom: 1px solid var(--vermelho-vinho);
+  text-align: center;
+}
+
+.subtitulo-central {
+  color: #b0a89e;
+  margin-bottom: 60px;
+  font-size: 1rem;
+}
+
+.grid-caminho {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.card-caminho {
+  background-color: #121212;
+  border: 1px solid #3a1015;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.3s, border-color 0.3s;
+}
+
+.card-caminho:hover {
+  transform: translateY(-5px);
+  border-color: var(--crimson-accent);
+}
+
+.circulo-img {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--dourado-titulo);
+  margin-bottom: 20px;
+}
+
+.circulo-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-caminho h3 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: var(--cor-areia);
+}
+
+.card-caminho p {
+  font-size: 0.85rem;
+  color: #9e968e;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.fase-tag {
+  font-size: 0.75rem;
+  color: var(--crimson-accent);
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: auto;
+}
+
+/* --------------------------------------------------------------------------
+   4. SEÇÃO "APRENDIZADOS"
+   -------------------------------------------------------------------------- */
+.secao-aprendizados {
+  padding: 100px 50px;
+  background-color: #0d0d0d;
+}
+
+.grid-aprendizados-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 60px;
+  max-width: 1100px;
+  margin: 0 auto;
+  align-items: center;
+}
+
+.bloco-texto-pessoal p {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #d1cbc1;
+  margin-bottom: 20px;
+}
+
+.link-conheca {
+  display: inline-block;
+  margin-top: 20px;
+  color: var(--dourado-titulo);
+  text-decoration: none;
+  font-weight: bold;
+  letter-spacing: 1px;
+  font-size: 0.9rem;
+  transition: color 0.3s;
+}
+
+.link-conheca:hover { color: var(--crimson-accent); }
+
+.bloco-midia-kimono {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.moldura-estrita {
+  border: 1px solid var(--vermelho-vinho);
+  padding: 5px;
+  background-color: var(--preto-fosco);
+}
+
+.moldura-estrita img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+}
+
+.lista-beneficios ul {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.lista-beneficios li {
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  color: var(--cor-areia);
+  font-weight: 500;
+}
+
+.check-red {
+  color: var(--crimson-accent);
+  margin-right: 8px;
+}
+
+/* --------------------------------------------------------------------------
+   Responsivo
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .hero-trajetoria,
+  .grid-aprendizados-layout {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .hero-subtitle { margin: 0 auto; }
+  .grid-caminho  { grid-template-columns: 1fr 1fr; }
+  .decoracao-nuvem { display: none; }
+}
+
+@media (max-width: 560px) {
+  .grid-caminho { grid-template-columns: 1fr; }
+}
