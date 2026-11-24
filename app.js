@@ -15,6 +15,13 @@ var HOST_APP = process.env.APP_HOST;
 
 var app = express();
 
+// script antigo (AquaTech): rotas que não existem mais no TAS | Meu Tatame
+// var avisosRouter = require("./src/routes/avisos");
+// var medidasRouter = require("./src/routes/medidas");
+// var aquariosRouter = require("./src/routes/aquarios");
+// var empresasRouter = require("./src/routes/empresas");
+
+// script novo (TAS): rotas de perfis, praticantes e treinos
 var indexRouter = require("./src/routes/index");
 var usuarioRouter = require("./src/routes/usuarios");
 var perfisRouter = require("./src/routes/perfis");
