@@ -1,4 +1,8 @@
-var database = require("../database/config");
+// ============================================================================
+// ARQUIVO DO AQUATECH, NÃO É MAIS USADO no TAS | Meu Tatame.
+// Ele não está registrado no app.js (as linhas dele foram comentadas lá).
+// Foi mantido só como registro/comparação com o projeto original.
+// ============================================================================var database = require("../database/config");
 
 function buscarPorId(id) {
   var instrucaoSql = `SELECT * FROM empresa WHERE id = '${id}'`;

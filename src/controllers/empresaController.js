@@ -1,4 +1,8 @@
-var empresaModel = require("../models/empresaModel");
+// ============================================================================
+// ARQUIVO DO AQUATECH, NÃO É MAIS USADO no TAS | Meu Tatame.
+// Ele não está registrado no app.js (as linhas dele foram comentadas lá).
+// Foi mantido só como registro/comparação com o projeto original.
+// ============================================================================var empresaModel = require("../models/empresaModel");
 
 function buscarPorCnpj(req, res) {
   var cnpj = req.query.cnpj;

@@ -10,6 +10,11 @@ var mySqlConfig = {
 };
 
 // "valores" é opcional: quando informado, substitui cada ? da instrução SQL
+
+// script antigo (AquaTech): função recebia só a instrução SQL
+// function executar(instrucao) {
+
+// script novo (TAS): recebe também "valores", que preenchem cada ? do SQL
 function executar(instrucao, valores) {
 
     if (process.env.AMBIENTE_PROCESSO !== "producao" && process.env.AMBIENTE_PROCESSO !== "desenvolvimento") {
@@ -20,8 +25,18 @@ function executar(instrucao, valores) {
     return new Promise(function (resolve, reject) {
         var conexao = mysql.createConnection(mySqlConfig);
         conexao.connect();
+         // script antigo (AquaTech):
+        // conexao.query(instrucao, function (erro, resultados) {
+
+        // script novo (TAS):
         conexao.query(instrucao, valores, function (erro, resultados) {
             conexao.end();
+              // script antigo (AquaTech):
+            // if (erro) {
+            //     reject(erro);
+            // }
+
+            // script novo (TAS): o return impede de seguir para o resolve depois do erro
             if (erro) {
                 reject(erro);
                 return;

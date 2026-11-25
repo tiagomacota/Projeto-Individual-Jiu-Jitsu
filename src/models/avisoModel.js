@@ -1,4 +1,8 @@
-var database = require("../database/config");
+// ============================================================================
+// ARQUIVO DO AQUATECH, NÃO É MAIS USADO no TAS | Meu Tatame.
+// Ele não está registrado no app.js (as linhas dele foram comentadas lá).
+// Foi mantido só como registro/comparação com o projeto original.
+// ============================================================================var database = require("../database/config");
 
 function listar() {
     console.log("ACESSEI O AVISO  MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function listar()");

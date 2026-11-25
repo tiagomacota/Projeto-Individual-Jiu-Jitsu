@@ -1,4 +1,8 @@
-var aquarioModel = require("../models/aquarioModel");
+// ============================================================================
+// ARQUIVO DO AQUATECH, NÃO É MAIS USADO no TAS | Meu Tatame.
+// Ele não está registrado no app.js (as linhas dele foram comentadas lá).
+// Foi mantido só como registro/comparação com o projeto original.
+// ============================================================================var aquarioModel = require("../models/aquarioModel");
 
 function buscarAquariosPorEmpresa(req, res) {
   var idUsuario = req.params.idUsuario;

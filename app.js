@@ -22,8 +22,8 @@ var app = express();
 // var empresasRouter = require("./src/routes/empresas");
 
 // script novo (TAS): rotas de perfis, praticantes e treinos
-var indexRouter = require("./src/routes/index");
-var usuarioRouter = require("./src/routes/usuarios");
+var indexRouter = require("./src/routes/index"); // ja existia no original
+var usuarioRouter = require("./src/routes/usuarios"); // ja existia no original
 var perfisRouter = require("./src/routes/perfis");
 var praticantesRouter = require("./src/routes/praticantes");
 var treinosRouter = require("./src/routes/treinos");
@@ -36,6 +36,14 @@ app.use(cors());
 
 app.use("/", indexRouter);
 app.use("/usuarios", usuarioRouter);
+
+// script antigo (AquaTech): rotas que não existem mais no TAS | Meu Tatame
+// app.use("/avisos", avisosRouter);
+// app.use("/medidas", medidasRouter);
+// app.use("/aquarios", aquariosRouter);
+// app.use("/empresas", empresasRouter);
+
+// script novo (TAS): rotas de perfis, praticantes e treinos
 app.use("/perfis", perfisRouter);
 app.use("/praticantes", praticantesRouter);
 app.use("/treinos", treinosRouter);
