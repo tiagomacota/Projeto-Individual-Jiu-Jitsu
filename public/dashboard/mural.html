@@ -28,6 +28,7 @@
             <a href="../index.html" class="sidebar-logo">
                 <img src="../assets/imgs/logotipo.png" alt="Logo TAS" class="logo-image">
             </a>
+            <a href="bemvindo.html" class="sidebar-item">Bem-vindo</a>
             <a href="treino.html" class="sidebar-item">Treino</a>
             <a href="mural.html" class="sidebar-item ativo">Mural</a>
             <div class="sidebar-user">
@@ -90,12 +91,14 @@
             <!-- Gráficos -->
             <section class="graficos-row">
                 <div class="painel-card">
-                    <h2>Aproveitamento mensal <small>meses por cor</small></h2>
-                    <div class="rosca-area">
-                        <div class="canvas-rosca"><canvas id="grafico_rosca"></canvas></div>
-                        <ul class="legenda-rosca" id="legenda_rosca"></ul>
+                    <h2>Aproveitamento mensal <small>% da meta de cada mês</small></h2>
+                    <div id="aproveitamento_area">
+                        <div class="rolagem-barras">
+                            <div class="canvas-barras-h" id="caixa_barras_h"><canvas id="grafico_aproveitamento"></canvas></div>
+                        </div>
+                        <ul class="legenda-cores" id="legenda_aproveitamento"></ul>
                     </div>
-                    <p class="estado-vazio" id="rosca_vazio" style="display: none;">Registre semanas na aba Treino para ver o aproveitamento por mês.</p>
+                    <p class="estado-vazio" id="aproveitamento_vazio" style="display: none;">Registre semanas na aba Treino para ver o aproveitamento por mês.</p>
                 </div>
 
                 <div class="painel-card">
@@ -104,17 +107,13 @@
                 </div>
             </section>
 
-            <!-- Jornada das faixas -->
+            <!-- Totem da faixa: um círculo que muda de cor conforme a faixa atual -->
             <section class="painel-card">
-                <h2>A jornada das faixas <small id="jornada_sub"></small></h2>
-                <div class="jornada" id="jornada"></div>
-                <p class="jornada-nota">Tempo e treinos calculados para o seu perfil atual. Os selos "IBJJF" são só referência e não alteram as contas.</p>
-            </section>
-
-            <!-- Comparativo de perfis -->
-            <section class="painel-card">
-                <h2>Quanto tempo cada perfil leva até a faixa preta</h2>
-                <div id="comparativo_perfis"></div>
+                <h2>Sua faixa</h2>
+                <div class="totem">
+                    <div class="totem-circulo branca" id="totem_circulo"></div>
+                    <div class="totem-nome" id="totem_nome">Faixa branca</div>
+                </div>
             </section>
 
         </div>
@@ -122,8 +121,9 @@
 
     </div>
 
-    <footer class="footer-tas">
-        <p>&copy; 2026 TAS - Templo da Arte Suave. Todos os direitos reservados.</p>
+    <footer class="footer-tas footer-frase">
+        <p class="frase">“Com o Jiu-Jitsu aprendi, sobretudo, a grande lição, que foi a de me conhecer profundamente.”</p>
+        <span class="frase-autor">— Carlos Gracie</span>
     </footer>
 
     <script src="../js/mural.js"></script>

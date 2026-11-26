@@ -8,7 +8,7 @@ function salvar(req, res) {
     var idUsuario = req.body.idUsuarioServer;
     var nome = req.body.nomeServer;
     var perfil = req.body.perfilServer;
-    var idade = req.body.idadeServer;
+    var dtNascimento = req.body.dtNascimentoServer;
 
     if (idUsuario == undefined) {
         res.status(400).send("Seu idUsuario está undefined!");
@@ -16,15 +16,25 @@ function salvar(req, res) {
         res.status(400).send("Seu nome está undefined!");
     } else if (perfil == undefined) {
         res.status(400).send("Seu perfil está undefined!");
-    } else if (idade == undefined) {
-        res.status(400).send("Sua idade está undefined!");
+    } else if (dtNascimento == undefined) {
+        res.status(400).send("Sua data de nascimento está undefined!");
     } else if (!perfis.perfilExiste(perfil)) {
         res.status(400).send("Perfil inválido! Use leve, moderado ou arduo.");
-    } else if (!Number.isInteger(Number(idade)) || Number(idade) < 1 || Number(idade) > 120) {
-        res.status(400).send("Idade inválida! Informe um número inteiro entre 1 e 120.");
+    } else if (!progressao.dataValida(dtNascimento) || dtNascimento < "1900-01-01") {
+        res.status(400).send("Data de nascimento inválida!");
+    } else if (dtNascimento > progressao.hojeISO()) {
+        res.status(400).send("A data de nascimento não pode ser no futuro!");
     } else {
-        praticanteModel.salvar(idUsuario, String(nome).trim().slice(0, 50), perfil, Number(idade))
-            .then(function () {
+        var nomeLimpo = String(nome).trim().slice(0, 50);
+        // já é praticante? então UPDATE (trocar de perfil); se não, INSERT
+        praticanteModel.buscar(idUsuario)
+            .then(function (resultado) {
+                if (resultado.length == 0) {
+                    return praticanteModel.cadastrar(idUsuario, nomeLimpo, perfil, dtNascimento);
+                } else {
+                    return praticanteModel.atualizar(idUsuario, nomeLimpo, perfil, dtNascimento);
+                }
+            }).then(function () {
                 res.json({ mensagem: "Perfil salvo com sucesso!" });
             }).catch(function (erro) {
                 console.log(erro);
@@ -56,6 +66,7 @@ function buscar(req, res) {
                     nome: p.nome,
                     perfil: p.perfil,
                     idade: p.idade,
+                    dtNascimento: p.dtNascimento,
                     metaSemanal: perfis.metaSemanal(p.perfil),
                     metaMensal: perfis.metaMensal(p.perfil),
                     faixaAtual: faixa.faixa,

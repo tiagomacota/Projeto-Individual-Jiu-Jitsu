@@ -5,19 +5,70 @@
    "ARTE SUAVE" gigante da Home — por isso eles ficam em arquivos separados.
    ========================================================================== */
 
+/* Divisória suave entre as seções (degradê escuro no topo, no lugar da linha) */
+.secao-comeco,
+.secao-caminho,
+.secao-entre { position: relative; }
+
+.secao-comeco::before,
+.secao-caminho::before,
+.secao-entre::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 80px;
+  background: linear-gradient(to bottom, rgba(5, 5, 5, 0.7), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
 /* --------------------------------------------------------------------------
-   1. HERO "MINHA TRAJETÓRIA"
+   1. TOPO "MINHA TRAJETÓRIA"
+   Fundo simples com elementos orientais feitos só com CSS:
+   - .hero-ondas: padrão de ondas japonesas ("seigaiha"), mais forte embaixo
+   - .hero-sol: círculo vermelho de sol nascente
    -------------------------------------------------------------------------- */
 .hero-trajetoria {
+  position: relative;
+  overflow: hidden;
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
   gap: 40px;
-  padding: 80px 50px;
-  border-bottom: 1px solid var(--vermelho-vinho);
-  position: relative;
-  background: linear-gradient(135deg, var(--preto-fosco) 60%, #150a0a 100%);
+  padding: 90px 50px;
+  background: linear-gradient(160deg, #1a0d10 0%, #120c0d 55%, #0e0b0c 100%);
 }
+
+.hero-sol {
+  position: absolute;
+  top: -60px;
+  right: 14%;
+  width: 380px;
+  height: 380px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #c2184a 0%, #8C1C22 60%, #5a1218 100%);
+  opacity: 0.5;
+  box-shadow: 0 0 90px rgba(237, 20, 91, 0.25);
+}
+
+.hero-ondas {
+  position: absolute;
+  inset: 0;
+  opacity: 0.55;
+  background-color: transparent;
+  background-image:
+    radial-gradient(circle at 100% 150%, #120c0d 24%, rgba(223, 193, 135, 0.32) 25%, rgba(223, 193, 135, 0.32) 28%, #120c0d 29%, #120c0d 36%, rgba(223, 193, 135, 0.32) 37%, rgba(223, 193, 135, 0.32) 40%, transparent 41%, transparent),
+    radial-gradient(circle at 0 150%, #120c0d 24%, rgba(223, 193, 135, 0.32) 25%, rgba(223, 193, 135, 0.32) 28%, #120c0d 29%, #120c0d 36%, rgba(223, 193, 135, 0.32) 37%, rgba(223, 193, 135, 0.32) 40%, transparent 41%, transparent),
+    radial-gradient(circle at 50% 100%, #120c0d 10%, rgba(223, 193, 135, 0.32) 11%, rgba(223, 193, 135, 0.32) 23%, #120c0d 24%, #120c0d 30%, rgba(223, 193, 135, 0.32) 31%, rgba(223, 193, 135, 0.32) 43%, #120c0d 44%, #120c0d 50%, rgba(223, 193, 135, 0.32) 51%, rgba(223, 193, 135, 0.32) 63%, #120c0d 64%, #120c0d 71%, transparent 72%, transparent);
+  background-size: 100px 50px;
+  /* as ondas aparecem embaixo e somem em direção ao topo */
+  -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 70%);
+  mask-image: linear-gradient(to top, #000 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-content,
+.hero-image-container { position: relative; z-index: 2; }
 
 .hero-title {
   font-family: 'Playfair Display', serif;
@@ -30,7 +81,7 @@
 
 .hero-subtitle {
   font-family: 'Barlow', sans-serif;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: #e0e0e0;
   line-height: 1.6;
   max-width: 480px;
@@ -48,53 +99,33 @@
   width: 100%;
   height: auto;
   object-fit: contain;
-  filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.7));
+  border-radius: 6px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.75);
 }
 
 /* --------------------------------------------------------------------------
-   2. SEÇÃO "O COMEÇO"
-   (.decoracao-nuvem e .container-conteudo existiam no HTML, mas não tinham CSS)
+   2. SEÇÃO "O COMEÇO"  (texto à esquerda, foto à direita)
    -------------------------------------------------------------------------- */
 .secao-comeco {
-  position: relative;
   padding: 100px 50px;
-  background: radial-gradient(circle at center, #0f1d30 0%, #080f1a 70%, var(--preto-fosco) 100%);
-  border-bottom: 1px solid var(--vermelho-vinho);
-  text-align: center;
-  overflow: hidden;
+  background: linear-gradient(180deg, #120c0d 0%, #0f0f12 100%);
 }
 
-.container-conteudo {
+.comeco-grid {
   position: relative;
   z-index: 2;
-  max-width: 900px;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 60px;
+  align-items: center;
+  max-width: 1150px;
   margin: 0 auto;
 }
 
-.decoracao-nuvem {
-  position: absolute;
-  width: 220px;
-  height: 120px;
-  z-index: 1;
-  background-repeat: no-repeat;
-  background-size: contain;
-  /* TODO: aponte para a imagem da nuvem dourada, ex.:
-     background-image: url('../assets/imgs/nuvem-dourada.png'); */
-}
-
-.decoracao-nuvem.top-left  { top: 20px; left: 20px; }
-.decoracao-nuvem.top-right { top: 20px; right: 20px; transform: scaleX(-1); }
-
-.faixa-branca-container { margin: 30px 0; }
-
-.img-faixa {
-  max-width: 350px;
-  opacity: 0.95;
-}
+.comeco-texto .titulo-secao { text-align: left; }
 
 .texto-bloco {
   max-width: 650px;
-  margin: 0 auto;
   font-size: 1rem;
   line-height: 1.8;
   color: #d1cbc1;
@@ -102,13 +133,49 @@
 
 .texto-bloco p { margin-bottom: 15px; }
 
+.comeco-foto {
+  min-height: 380px;
+  border: 1px solid var(--vermelho-vinho);
+  padding: 6px;
+  background-color: var(--preto-fosco);
+  border-radius: 6px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.6);
+}
+
+.comeco-foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 368px;
+  object-fit: cover;
+}
+
+/* Espaço vazio enquanto a foto não existe */
+.comeco-foto.vazio {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #4a2a2e;
+  background: rgba(255, 255, 255, 0.02);
+  box-shadow: none;
+}
+
+.comeco-foto.vazio::after {
+  content: "Foto dos primeiros treinos";
+  color: #6f6760;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
 /* --------------------------------------------------------------------------
    3. SEÇÃO "O CAMINHO"
+   As fotos são de banco de imagens (você baixa). Se o arquivo novo ainda
+   não existir, aparece a imagem reserva logo depois da vírgula.
    -------------------------------------------------------------------------- */
 .secao-caminho {
   padding: 100px 50px;
-  background-color: var(--preto-fosco);
-  border-bottom: 1px solid var(--vermelho-vinho);
+  background: radial-gradient(ellipse at 50% 0%, #1a0d10 0%, #0d0d0d 65%);
   text-align: center;
 }
 
@@ -119,6 +186,8 @@
 }
 
 .grid-caminho {
+  position: relative;
+  z-index: 2;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 30px;
@@ -142,17 +211,13 @@
 }
 
 .circulo-img {
+  display: block;
   width: 110px;
   height: 110px;
   border-radius: 50%;
-  overflow: hidden;
   border: 2px solid var(--dourado-titulo);
   margin-bottom: 20px;
-}
-
-.circulo-img img {
-  width: 100%;
-  height: 100%;
+  background-color: #1a1a1a;
   object-fit: cover;
 }
 
@@ -179,14 +244,16 @@
 }
 
 /* --------------------------------------------------------------------------
-   4. SEÇÃO "APRENDIZADOS"
+   4. SEÇÃO "ENTRE NO TATAME"
    -------------------------------------------------------------------------- */
-.secao-aprendizados {
+.secao-entre {
   padding: 100px 50px;
-  background-color: #0d0d0d;
+  background: linear-gradient(180deg, #0d0d0d 0%, #170b0d 100%);
 }
 
-.grid-aprendizados-layout {
+.grid-entre-layout {
+  position: relative;
+  z-index: 2;
   display: grid;
   grid-template-columns: 1.2fr 1fr;
   gap: 60px;
@@ -195,6 +262,8 @@
   align-items: center;
 }
 
+.bloco-texto-pessoal .titulo-secao { text-align: left; }
+
 .bloco-texto-pessoal p {
   font-size: 1rem;
   line-height: 1.8;
@@ -202,18 +271,22 @@
   margin-bottom: 20px;
 }
 
-.link-conheca {
+.btn-cadastro {
   display: inline-block;
-  margin-top: 20px;
-  color: var(--dourado-titulo);
+  margin-top: 10px;
+  padding: 13px 30px;
+  background-color: var(--vermelho-tas);
+  color: #fff;
   text-decoration: none;
-  font-weight: bold;
-  letter-spacing: 1px;
-  font-size: 0.9rem;
-  transition: color 0.3s;
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border-radius: 5px;
+  transition: background-color 0.3s, transform 0.3s;
 }
 
-.link-conheca:hover { color: var(--crimson-accent); }
+.btn-cadastro:hover { background-color: #b0232a; transform: translateY(-2px); }
 
 .bloco-midia-kimono {
   display: flex;
@@ -227,44 +300,36 @@
   background-color: var(--preto-fosco);
 }
 
-.moldura-estrita img {
-  width: 100%;
-  height: 220px;
-  object-fit: cover;
+.foto-entre {
   display: block;
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  background-color: #1a1a1a;
 }
 
-.lista-beneficios ul {
-  list-style: none;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.lista-beneficios li {
-  font-size: 0.85rem;
-  letter-spacing: 1px;
-  color: var(--cor-areia);
-  font-weight: 500;
-}
-
-.check-red {
-  color: var(--crimson-accent);
-  margin-right: 8px;
-}
+/* sem src preenchido, a imagem some e fica só o fundo escuro */
+.circulo-img[src=""],
+.foto-entre[src=""] { visibility: hidden; }
 
 /* --------------------------------------------------------------------------
    Responsivo
    -------------------------------------------------------------------------- */
 @media (max-width: 900px) {
   .hero-trajetoria,
-  .grid-aprendizados-layout {
+  .comeco-grid,
+  .grid-entre-layout {
     grid-template-columns: 1fr;
-    text-align: center;
   }
+  .hero-trajetoria { text-align: center; padding: 70px 24px; }
   .hero-subtitle { margin: 0 auto; }
-  .grid-caminho  { grid-template-columns: 1fr 1fr; }
-  .decoracao-nuvem { display: none; }
+  .hero-sol { right: -60px; }
+  .secao-comeco, .secao-caminho, .secao-entre { padding: 80px 24px; }
+  .comeco-foto { min-height: 260px; }
+  .bloco-texto-pessoal { text-align: center; }
+  .bloco-texto-pessoal .titulo-secao,
+  .comeco-texto .titulo-secao { text-align: center; }
+  .grid-caminho { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 560px) {

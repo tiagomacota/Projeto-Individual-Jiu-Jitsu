@@ -12,129 +12,120 @@
     <!-- NAVBAR PADRÃO TAS -->
     <div class="header">
       <div class="container">
-      <a href="#" class="logo-container">
+        <a href="index.html" class="logo-container">
           <img src="./assets/imgs/logotipo.png" alt="Logotipo Templo da Arte Suave" class="logo-image">
         </a>
         <ul class="navbar">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="minhatrajetoria.html" class="agora">Minha Trajetoria</a></li>
-                <li class="divider">|</li>
-                <li><a href="login.html">Login</a></li>
-                <li><a href="cadastro.html">Cadastro</a></li>
-            </ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="minhatrajetoria.html" class="agora">Minha Trajetoria</a></li>
+            <li class="divider">|</li>
+            <li><a href="login.html">Login</a></li>
+            <li><a href="cadastro.html">Cadastro</a></li>
+        </ul>
       </div>
     </div>
-  
 
-    <!-- HERO SECTION: MINHA TRAJETÓRIA -->
+    <!-- TOPO: fundo com elementos orientais feitos só em CSS (ondas "seigaiha" e sol nascente) -->
     <section class="hero-trajetoria">
+        <div class="hero-sol"></div>
+        <div class="hero-ondas"></div>
         <div class="hero-content">
             <h1 class="hero-title">MINHA TRAJETÓRIA</h1>
-            <p class="hero-subtitle">Mais do que uma luta... o Jiu-Jitsu é um caminho de disciplina e evolução constante.</p>
+            <p class="hero-subtitle">A minha história de superação no esporte</p>
         </div>
         <div class="hero-image-container">
             <img src="./assets/imgs/praticante_hero.jpg" alt="Praticante de Jiu-Jitsu focado" class="hero-img">
         </div>
     </section>
 
-    <!-- SEÇÃO O COMEÇO (Com o background clássico de faixa azul e elementos orientais) -->
+    <!-- O COMEÇO: texto à esquerda e a sua foto dos primeiros treinos à direita -->
     <section class="secao-comeco">
-        <div class="decoracao-nuvem top-left"></div>
-        <div class="decoracao-nuvem top-right"></div>
-        
-        <div class="container-conteudo">
-            <h2 class="titulo-secao">O Começo</h2>
-            <div class="faixa-branca-container">
-                <img src="./assets/imgs/faixa_branca.png" alt="Faixa Branca" class="img-faixa">
+        <div class="comeco-grid">
+            <div class="comeco-texto">
+                <h2 class="titulo-secao">O Começo</h2>
+                <div class="texto-bloco">
+                    <p>Em 2025, descobri o Jiu-Jitsu na igreja, pelo projeto MDL (Ministério das Lutas), com o
+                        mestre Dedé. Eu queria só experimentar e acabei encontrando um esporte que eu amo praticar.</p>
+                    <p>Comecei sem kimono, treinando com roupa de esporte, e acabava rasgando tudo.</p>
+                    <p>No tatame fiz amizades que fazem o treino valer ainda mais: Gabriel, Daniel, Adauto e outros
+                        companheiros.</p>
+                    <p>No começo você só apanha. Aos poucos o corpo aprende, e o dia do meu primeiro grau veio com a
+                        sensação de trabalho bem feito.</p>
+                    <p>Para mim, o Jiu-Jitsu representa esforço, uma imagem melhor de mim mesmo e a humildade de ser
+                        sempre aprendiz. E, acima de tudo, o prazer de praticar um esporte de que eu gosto.</p>
+                </div>
             </div>
-            <div class="texto-bloco">
-                <p>O Jiu-Jitsu entrou na minha vida da forma inesperada, mas ficou por um propósito.</p>
-                <p>Ao longo do tempo, aprendi que o tatame vai muito além de técnicas e posições.</p>
-                <p>É um lugar de desafios, aprendizados e pessoas que tornam o caminho mais leve e significativo.</p>
+            <!-- COLOQUE AQUI a sua foto dos primeiros treinos: src="assets/imgs/NOME-DA-FOTO.jpg" -->
+            <div class="comeco-foto">
+                <img src="./assets/imgs/primeirotreino.jpg" alt="Meus primeiros treinos" onerror="this.parentElement.classList.add('vazio'); this.remove();">
             </div>
         </div>
     </section>
 
-    <!-- SEÇÃO O CAMINHO (Imagens em formato circular perfeito) -->
+    <!-- O CAMINHO (fotos de banco de imagens, em círculo) -->
     <section class="secao-caminho">
         <h2 class="titulo-secao">O Caminho</h2>
         <p class="subtitulo-central">O Jiu-Jitsu me mostrou que o verdadeiro desafio não está no adversário, mas em mim mesmo.</p>
-        
+
         <div class="grid-caminho">
-            <!-- Item 1 -->
             <div class="card-caminho">
-                <div class="circulo-img">
-                    <img src="./assets/imgs/treino1.jpg" alt="Primeiro Treino">
-                </div>
+                <!-- COLOQUE AQUI a foto (Unsplash): src="assets/imgs/NOME-DA-FOTO.jpg" -->
+                <img class="circulo-img" src="./assets/imgs/unsplash01.avif" alt="Primeiro treino">
                 <h3>Primeiro treino</h3>
-                <p>Aquele primeiro contato com o tatame trouxe algo diferente. Eu não imaginava o quanto aquilo soaria vital.</p>
+                <p>Aquele primeiro contato com o tatame foi diferente de tudo.</p>
                 <span class="fase-tag">FASE 01 - Descoberta</span>
             </div>
 
-            <!-- Item 2 -->
             <div class="card-caminho">
-                <div class="circulo-img">
-                    <img src="./assets/imgs/treino2.jpg" alt="Disciplina">
-                </div>
+                <!-- COLOQUE AQUI a foto (Unsplash): src="assets/imgs/NOME-DA-FOTO.jpg" -->
+                <img class="circulo-img" src="./assets/imgs/unsplash02.avif" alt="Disciplina">
                 <h3>Disciplina</h3>
-                <p>Aprendi que a constância supera o talento quando a motivação não aparece.</p>
+                <p>A disciplina me traz de volta ao tatame e supera a desmotivação quando o desânimo aparece.</p>
                 <span class="fase-tag">FASE 02 - Processo</span>
             </div>
 
-            <!-- Item 3 -->
             <div class="card-caminho">
-                <div class="circulo-img">
-                    <img src="./assets/imgs/treino3.jpg" alt="Superar desafios">
-                </div>
+                <!-- COLOQUE AQUI a foto (Unsplash): src="assets/imgs/NOME-DA-FOTO.jpg" -->
+                <img class="circulo-img" src="./assets/imgs/unsplash03.avif" alt="Superar desafios">
                 <h3>Superar desafios</h3>
-                <p>O tatame me ensinou a lidar com o desconforto, os erros e as derrotas. Cada dificuldade é parte do aprendizado.</p>
+                <p>O tatame me ensina a lidar com os erros e os desconfortos, ombro na cara.</p>
                 <span class="fase-tag">FASE 03 - Resiliência</span>
             </div>
 
-            <!-- Item 4 -->
             <div class="card-caminho">
-                <div class="circulo-img">
-                    <img src="./assets/imgs/treino4.jpg" alt="Evolução contínua">
-                </div>
+                <!-- COLOQUE AQUI a foto (Unsplash): src="assets/imgs/NOME-DA-FOTO.jpg" -->
+                <img class="circulo-img" src="./assets/imgs/unsplash04.avif" alt="Evolução contínua">
                 <h3>Evolução contínua</h3>
-                <p>Hoje, a evolução faz parte da minha rotina. Na medida do meu ritmo, na mesma rotina e a forma como encaro a vida.</p>
+                <p>Na medida do meu ritmo, conforme a rotina muda, a prática cessa, mas a forma como eu encaro   a vida já é diferente.</p>
                 <span class="fase-tag">FASE 04 - Vida</span>
             </div>
         </div>
     </section>
 
-    <!-- SEÇÃO APRENDIZADOS -->
-    <section class="secao-aprendizados">
-        <div class="grid-aprendizados-layout">
+    <!-- ENTRE NO TATAME -->
+    <section class="secao-entre">
+        <div class="grid-entre-layout">
             <div class="bloco-texto-pessoal">
-                <h2 class="titulo-secao">Aprendizados</h2>
-                <p>O Jiu-Jitsu mudou a minha vida de forma inesperada, e se tornou o meu propósito.</p>
-                <p>Ao longo desse jorna, aprendi que as técnicas vão muito além de posições no tatame.</p>
-                <p>É um lugar de trocas, aprendizados e pessoas que tornam o caminho mais leve e significativo.</p>
-                <a href="dashboard.html" class="link-conheca">CONHEÇA MAIS -></a>
+                <h2 class="titulo-secao">Entre no tatame</h2>
+                <p>Sua vida muda, você aprende a lidar com o desconforto, aprende a lidar com pressão e, mais do que
+                    isso, faz amizades, treina o corpo, a mente e sempre vai estar preparado para se defender!</p>
+                <p>Se você quer sentir isso na pele, tenha sua vida mudada, cadastre-se no templo!</p>
+                <a href="cadastro.html" class="btn-cadastro">Cadastre-se! OSS</a>
             </div>
 
             <div class="bloco-midia-kimono">
                 <div class="moldura-estrita">
-                    <img src="./assets/imgs/tatame_dojo.jpg" alt="Dojo Tatame">
-                </div>
-                <div class="lista-beneficios">
-                    <ul>
-                        <li><span class="check-red">✔</span> SAÚDE</li>
-                        <li><span class="check-red">✔</span> DISCIPLINA</li>
-                        <li><span class="check-red">✔</span> AMIZADE</li>
-                        <li><span class="check-red">✔</span> FOCO</li>
-                        <li><span class="check-red">✔</span> RESILIÊNCIA</li>
-                        <li><span class="check-red">✔</span> EVOLUÇÃO</li>
-                    </ul>
+                    <!-- COLOQUE AQUI a foto (Unsplash): src="assets/imgs/NOME-DA-FOTO.jpg" -->
+                    <img class="foto-entre" src="./assets/imgs/tatame03.jpg" alt="Tatame de Jiu-Jitsu">
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- RODAPÉ -->
-    <footer class="footer-tas">
-        <p>&copy; 2026 TAS - Templo da Arte Suave. Todos os direitos reservados.</p>
+    <!-- RODAPÉ: frase do Carlos Gracie -->
+    <footer class="footer-tas footer-frase">
+        <p class="frase">“Com o Jiu-Jitsu aprendi, sobretudo, a grande lição, que foi a de me conhecer profundamente.”</p>
+        <span class="frase-autor">— Carlos Gracie</span>
     </footer>
 
 </body>

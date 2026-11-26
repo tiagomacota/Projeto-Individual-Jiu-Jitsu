@@ -3,9 +3,18 @@ var treinoModel = require("../models/treinoModel");
 var perfis = require("../config/perfis");
 var progressao = require("../services/progressao");
 
-// A data de "hoje" pode vir do navegador (?hoje=AAAA-MM-DD), para respeitar o fuso do usuário
+// Quantas semanas ANTERIORES à atual ainda podem ser registradas (regra do Progresso semanal)
+var SEMANAS_ANTERIORES_PERMITIDAS = 4;
+
+// A data de "hoje" pode vir do navegador (?hoje=AAAA-MM-DD), para respeitar o fuso do usuário.
+// Mas só aceitamos se estiver a no máximo 1 dia da data do servidor; senão alguém
+// poderia mandar uma data falsa e burlar o limite de semanas.
 function obterHoje(valor) {
-    return progressao.dataValida(valor) ? valor : progressao.hojeISO();
+    var hojeServidor = progressao.hojeISO();
+    if (!progressao.dataValida(valor)) return hojeServidor;
+    if (valor === hojeServidor) return valor;
+    if (valor === progressao.somarDias(hojeServidor, -1) || valor === progressao.somarDias(hojeServidor, 1)) return valor;
+    return hojeServidor;
 }
 
 // POST /treinos/registrar
@@ -25,6 +34,9 @@ function registrar(req, res) {
         res.status(400).send("A semana deve começar em um domingo (AAAA-MM-DD)!");
     } else if (semanaInicio > progressao.domingoDaSemana(hoje)) {
         res.status(400).send("Não é possível registrar uma semana futura!");
+    } else if (semanaInicio < progressao.somarDias(progressao.domingoDaSemana(hoje), -7 * SEMANAS_ANTERIORES_PERMITIDAS)) {
+        // Regra nova: só a semana atual e as 4 anteriores ficam disponíveis
+        res.status(400).send("Só é possível registrar a semana atual e as " + SEMANAS_ANTERIORES_PERMITIDAS + " semanas anteriores!");
     } else if (!Number.isInteger(Number(treinos)) || Number(treinos) < 0 || Number(treinos) > 21) {
         res.status(400).send("Treinos deve ser um número inteiro de 0 a 21!");
     } else {
@@ -35,9 +47,15 @@ function registrar(req, res) {
                     return;
                 }
                 var perfil = resultado[0].perfil;
-                // snapshot: guarda o perfil e a meta vigentes no momento do registro
-                return treinoModel.registrar(idUsuario, semanaInicio, Number(treinos), perfil, perfis.metaSemanal(perfil))
-                    .then(function () {
+                // a semana já existe? então UPDATE; se não, INSERT (guardando perfil e meta da semana)
+                return treinoModel.buscarSemana(idUsuario, semanaInicio)
+                    .then(function (semana) {
+                        if (semana.length == 0) {
+                            return treinoModel.cadastrar(idUsuario, semanaInicio, Number(treinos), perfil, perfis.metaSemanal(perfil));
+                        } else {
+                            return treinoModel.atualizar(idUsuario, semanaInicio, Number(treinos));
+                        }
+                    }).then(function () {
                         res.json({ mensagem: "Semana registrada com sucesso!" });
                     });
             }).catch(function (erro) {

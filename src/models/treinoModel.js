@@ -1,16 +1,32 @@
 var database = require("../database/config");
 
-// Grava o total de treinos de uma semana.
-// Se a semana já existe, só atualiza o total (mantém o perfil/meta originais da semana).
-function registrar(idUsuario, semanaInicio, treinos, perfil, metaSemanal) {
+// Procura se a semana já foi registrada (se já foi, o controller faz UPDATE em vez de INSERT)
+function buscarSemana(idUsuario, semanaInicio) {
+    var instrucaoSql = `
+        SELECT id_registro
+        FROM registro_semanal
+        WHERE fk_usuario = ? AND semana_inicio = ?;
+    `;
+    return database.executar(instrucaoSql, [idUsuario, semanaInicio]);
+}
+
+// Semana nova: grava o total e o perfil/meta da semana (snapshot)
+function cadastrar(idUsuario, semanaInicio, treinos, perfil, metaSemanal) {
     var instrucaoSql = `
         INSERT INTO registro_semanal (fk_usuario, semana_inicio, treinos_realizados, perfil, meta_semanal)
-        VALUES (?, ?, ?, ?, ?)
-        ON DUPLICATE KEY UPDATE
-            treinos_realizados = VALUES(treinos_realizados),
-            dtRegistro = NOW();
+        VALUES (?, ?, ?, ?, ?);
     `;
     return database.executar(instrucaoSql, [idUsuario, semanaInicio, treinos, perfil, metaSemanal]);
+}
+
+// Semana existente: só muda o total (mantém o perfil/meta originais da semana)
+function atualizar(idUsuario, semanaInicio, treinos) {
+    var instrucaoSql = `
+        UPDATE registro_semanal
+        SET treinos_realizados = ?
+        WHERE fk_usuario = ? AND semana_inicio = ?;
+    `;
+    return database.executar(instrucaoSql, [treinos, idUsuario, semanaInicio]);
 }
 
 // Todas as semanas do usuário em ordem cronológica.
@@ -26,4 +42,4 @@ function listarTodas(idUsuario) {
     return database.executar(instrucaoSql, [idUsuario]);
 }
 
-module.exports = { registrar, listarTodas };
+module.exports = { buscarSemana, cadastrar, atualizar, listarTodas };

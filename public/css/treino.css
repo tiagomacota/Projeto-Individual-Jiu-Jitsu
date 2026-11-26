@@ -95,37 +95,25 @@
 .ficha-linha dt { color: var(--texto-suave); }
 .ficha-linha dd { text-align: right; font-weight: 600; }
 
-/* Barras de exigência / velocidade (ex.: 2 de 3) */
-.barras { display: inline-flex; gap: 4px; vertical-align: middle; margin-right: 6px; }
-.barras i { width: 18px; height: 8px; border-radius: 2px; background-color: #333; }
-.barras i.on { background-color: var(--crimson-accent); }
-
-/* Tabela tempo x treinos até cada faixa */
-.ficha-faixas {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.85rem;
-  margin-bottom: 10px;
+/* Progressão em anos (no lugar da tabela de treinos) */
+.ficha-progressao {
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  background-color: #151515;
+  border-left: 3px solid var(--dourado-titulo);
+  border-radius: 4px;
 }
 
-.ficha-faixas th {
-  text-align: right;
-  font-size: 0.68rem;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--texto-suave);
-  font-weight: 700;
-  padding: 4px 0 6px;
-}
+.progressao-bolinhas { display: flex; gap: 6px; margin-bottom: 8px; }
 
-.ficha-faixas th:first-child, .ficha-faixas td:first-child { text-align: left; }
-.ficha-faixas td { text-align: right; padding: 6px 0; border-top: 1px solid #262626; }
+.ficha-progressao p { font-size: 0.92rem; line-height: 1.5; margin-bottom: 6px; }
+.ficha-progressao p b { color: var(--dourado-titulo); }
+.ficha-progressao small { font-size: 0.74rem; color: var(--texto-suave); }
 
 .bolinha-faixa {
   display: inline-block;
-  width: 10px; height: 10px;
+  width: 12px; height: 12px;
   border-radius: 50%;
-  margin-right: 6px;
   border: 1px solid #777;
 }
 .bolinha-faixa.branca { background: #f5f5f5; }
@@ -134,23 +122,11 @@
 .bolinha-faixa.marrom { background: var(--marrom-faixa); }
 .bolinha-faixa.preta { background: #000; border-color: var(--dourado-titulo); }
 
-.ficha-total {
-  font-weight: 800;
-  text-align: center;
-  padding: 10px 0;
-  margin-bottom: 8px;
-  color: var(--dourado-titulo);
-  font-size: 1.05rem;
-}
-
-.selo-ibjjf {
+.ref-ibjjf {
   font-size: 0.76rem;
   color: var(--texto-suave);
-  line-height: 1.4;
   margin-bottom: 14px;
 }
-
-.selo-ibjjf .alerta { color: var(--amarelo); display: block; margin-top: 4px; }
 
 .perfil-card .btn-tas { margin-top: auto; width: 100%; }
 
@@ -186,4 +162,3 @@
   .perfil-card.selecionado { transform: none; }
   .perfil-topo, .perfil-para-quem { min-height: 0; }
 }
-.ficha-faixas td:first-child { white-space: nowrap; }

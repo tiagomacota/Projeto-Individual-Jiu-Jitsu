@@ -27,6 +27,7 @@
             <a href="../index.html" class="sidebar-logo">
                 <img src="../assets/imgs/logotipo.png" alt="Logo TAS" class="logo-image">
             </a>
+            <a href="bemvindo.html" class="sidebar-item">Bem-vindo</a>
             <a href="treino.html" class="sidebar-item ativo">Treino</a>
             <a href="mural.html" class="sidebar-item">Mural</a>
             <div class="sidebar-user">
@@ -54,8 +55,8 @@
                     <input type="text" id="input_nome" maxlength="50" placeholder="Seu nome">
                 </label>
                 <label class="dados-campo">
-                    <span>Idade</span>
-                    <input type="number" id="input_idade" min="1" max="120" placeholder="Ex.: 20">
+                    <span>Data de nascimento</span>
+                    <input type="date" id="input_nascimento" onkeyup="avisarIdade()" onchange="avisarIdade()">
                 </label>
                 <button class="btn-tas secundario" id="btn_salvar_dados" onclick="salvarDados()">Salvar dados</button>
             </div>
@@ -76,7 +77,7 @@
         <section class="painel-card" id="secao_semanas" style="display: none;">
             <h2>3. Progresso semanal <small>semana de domingo a sábado</small></h2>
             <div id="lista_semanas"></div>
-            <button class="btn-tas secundario" id="btn_mais_semanas" onclick="mostrarMaisSemanas()">Mostrar semanas anteriores</button>
+            <button class="btn-tas secundario" id="btn_mais_semanas" onclick="alternarSemanasAnteriores()">Semanas anteriores (últimas 4)</button>
             <div class="msg" id="msg_semanas"></div>
         </section>
 
@@ -84,8 +85,9 @@
 
     </div>
 
-    <footer class="footer-tas">
-        <p>&copy; 2026 TAS - Templo da Arte Suave. Todos os direitos reservados.</p>
+    <footer class="footer-tas footer-frase">
+        <p class="frase">“Com o Jiu-Jitsu aprendi, sobretudo, a grande lição, que foi a de me conhecer profundamente.”</p>
+        <span class="frase-autor">— Carlos Gracie</span>
     </footer>
 
     <script src="../js/treino.js"></script>

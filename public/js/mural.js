@@ -1,11 +1,14 @@
 // ==========================================================================
-// MURAL.JS — dashboard de progressão (KPIs, gráficos e jornada das faixas)
+// MURAL.JS — dashboard de progressão (KPIs, gráficos e totem da faixa)
 // Depende de: sessao.js, tas-util.js e Chart.js (CDN)
 // ==========================================================================
 
 var ID_USUARIO = sessionStorage.ID_USUARIO;
-var graficoRosca = null;
+var graficoAproveitamento = null;
 var graficoSemanas = null;
+
+// Faltando mais treinos que isso, o KPI mostra "parabéns"; com 10 ou menos, mostra "Faltam X"
+var LIMITE_FALTAM = 10;
 
 // Cores dos gráficos (sobre fundo escuro)
 var COR_VERDE = "#4caf7a";
@@ -20,33 +23,32 @@ function iniciarMural() {
     if (!ID_USUARIO) { limparSessao(); return; }
     var hoje = hojeLocalISO();
 
-    Promise.all([
-        buscarJSON("/treinos/resumo/" + ID_USUARIO + "?hoje=" + hoje),
-        buscarJSON("/treinos/meses/" + ID_USUARIO),
-        buscarJSON("/treinos/semanas/" + ID_USUARIO + "?limite=60"),
-        buscarJSON("/perfis")
-    ]).then(function (r) {
+    // Os 3 fetches acontecem um depois do outro: resumo -> meses -> semanas
+    buscarJSON("/treinos/resumo/" + ID_USUARIO + "?hoje=" + hoje).then(function (respResumo) {
         // 404 = usuário ainda não escolheu perfil
-        if (r[0].status === 404) {
+        if (respResumo.status === 404) {
             mural_vazio.style.display = "block";
             return;
         }
-        if (!r[0].ok) {
+        if (!respResumo.ok) {
             mural_vazio.style.display = "block";
             mural_vazio.innerHTML = "Não foi possível carregar o seu progresso. Tente novamente mais tarde.";
             return;
         }
-        mural_conteudo.style.display = "flex";
+        var resumo = respResumo.dados;
 
-        var resumo = r[0].dados;
-        desenharCabecalho(resumo);
-        desenharKpiFaixa(resumo);
-        desenharKpiMeta(resumo);
-        desenharKpiComparativo(resumo);
-        desenharRosca(r[1].dados);
-        desenharSemanas(r[2].dados, resumo.metaSemanal, hoje);
-        desenharJornada(resumo);
-        if (r[3].ok) desenharComparativoPerfis(r[3].dados, resumo.perfil);
+        buscarJSON("/treinos/meses/" + ID_USUARIO).then(function (respMeses) {
+            buscarJSON("/treinos/semanas/" + ID_USUARIO + "?limite=60").then(function (respSemanas) {
+                mural_conteudo.style.display = "flex";
+                desenharCabecalho(resumo);
+                desenharKpiFaixa(resumo);
+                desenharKpiMeta(resumo);
+                desenharKpiComparativo(resumo);
+                desenharAproveitamento(respMeses.dados);
+                desenharSemanas(respSemanas.dados, resumo.metaSemanal, hoje);
+                desenharTotem(resumo);
+            });
+        });
     }).catch(function (erro) {
         console.log(erro);
         mural_vazio.style.display = "block";
@@ -76,14 +78,24 @@ function desenharKpiFaixa(r) {
         return;
     }
     kpi_titulo_faixa.innerHTML = "Próxima faixa: " + NOMES_FAIXA[r.proximaFaixa];
-    kpi_faltam.innerHTML = "Faltam " + numeroBR(r.faltam) + " treinos";
+    // Longe da próxima faixa: celebra o que já fez. Perto (10 ou menos): mostra quantos faltam.
+    if (r.faltam > LIMITE_FALTAM) {
+        kpi_faltam.innerHTML = textoParabens(r.treinosNaFaixa);
+    } else {
+        kpi_faltam.innerHTML = r.faltam === 1 ? "Falta 1 treino" : "Faltam " + numeroBR(r.faltam) + " treinos";
+    }
     kpi_barra_faixa.style.width = r.percentual + "%";
     kpi_leg_atual.innerHTML = NOMES_FAIXA[r.faixaAtual] + " (atual)";
     kpi_leg_pct.innerHTML = numeroBR(r.percentual) + "% concluído";
     kpi_leg_prox.innerHTML = NOMES_FAIXA[r.proximaFaixa] + " (próxima)";
     kpi_apoio_faixa.innerHTML = '<b>' + numeroBR(r.treinosNaFaixa) + ' de ' + numeroBR(r.limiteAtual) + '</b> treinos nesta faixa.<br>' +
-        'No seu ritmo: ~' + numeroBR(r.mesesRestantes) + ' meses · previsão ' + mesAnoBR(r.dataPrevistaProxima) +
-        '<br>Faixa preta: previsão ' + mesAnoBR(r.dataPrevistaPreta) + '.';
+        'No seu ritmo: ~' + numeroBR(r.mesesRestantes) + ' meses · previsão ' + mesAnoBR(r.dataPrevistaProxima) + '.';
+}
+
+// "Você realizou N treinos, parabéns!" (N = treinos feitos na faixa atual)
+function textoParabens(n) {
+    if (n === 0) return "Registre seu primeiro treino. Oss!";
+    return "Você realizou " + numeroBR(n) + (n === 1 ? " treino" : " treinos") + ", parabéns!";
 }
 
 // ---------- KPI 2: meta mensal ----------
@@ -121,42 +133,64 @@ function desenharKpiComparativo(r) {
     kpi_comp_detalhe.innerHTML = r.mesAtual.treinos + " treinos agora contra " + r.mesAnterior.treinos + " no mês anterior.";
 }
 
-// ---------- Rosquinha: aproveitamento mensal ----------
-function desenharRosca(dados) {
+// ---------- Barras horizontais: aproveitamento mensal ----------
+// Uma barra por mês (o mais recente no topo). A cor segue a regra:
+// verde >= 100% · amarelo 60% a 99% · vermelho < 60%
+function desenharAproveitamento(dados) {
     var t = dados.totais;
-    var total = t.verde + t.amarelo + t.vermelho;
+    var lista = dados.meses.slice().reverse();     // mais recente primeiro
 
-    legenda_rosca.innerHTML =
+    legenda_aproveitamento.innerHTML =
         '<li><span class="quad" style="background:' + COR_VERDE + '"></span>Constante (≥ 100%)<b>' + t.verde + '</b></li>' +
         '<li><span class="quad" style="background:' + COR_AMARELO + '"></span>Médio (60% a 99%)<b>' + t.amarelo + '</b></li>' +
         '<li><span class="quad" style="background:' + COR_VERMELHO + '"></span>Crítico (&lt; 60%)<b>' + t.vermelho + '</b></li>';
 
-    if (total === 0) {
-        document.querySelector(".rosca-area").style.display = "none";
-        rosca_vazio.style.display = "block";
+    if (lista.length === 0) {
+        aproveitamento_area.style.display = "none";
+        aproveitamento_vazio.style.display = "block";
         return;
     }
 
-    graficoRosca = new Chart(grafico_rosca.getContext("2d"), {
-        type: "doughnut",
+    // a altura cresce com a quantidade de meses (a caixa ao redor rola se ficar muito alta)
+    caixa_barras_h.style.height = Math.max(150, lista.length * 38 + 50) + "px";
+
+    var corPorClasse = { verde: COR_VERDE, amarelo: COR_AMARELO, vermelho: COR_VERMELHO };
+    var maior = 0;
+    lista.forEach(function (m) { if (m.aproveitamento > maior) maior = m.aproveitamento; });
+
+    graficoAproveitamento = new Chart(grafico_aproveitamento.getContext("2d"), {
+        type: "bar",
         data: {
-            labels: ["Constante", "Médio", "Crítico"],
+            labels: lista.map(function (m) { return m.rotulo; }),
             datasets: [{
-                data: [t.verde, t.amarelo, t.vermelho],
-                backgroundColor: [COR_VERDE, COR_AMARELO, COR_VERMELHO],
-                borderColor: "#0f0f0f",
-                borderWidth: 2
+                label: "Aproveitamento",
+                data: lista.map(function (m) { return m.aproveitamento; }),
+                backgroundColor: lista.map(function (m) { return corPorClasse[m.classe]; }),
+                borderRadius: 4,
+                maxBarThickness: 22
             }]
         },
         options: {
+            indexAxis: "y",                       // barras na horizontal
             responsive: true,
             maintainAspectRatio: false,
-            cutout: "62%",
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    suggestedMax: Math.max(110, Math.ceil(maior / 10) * 10 + 10),
+                    ticks: { color: COR_TEXTO, callback: function (v) { return v + "%"; } },
+                    grid: { color: COR_GRADE }
+                },
+                y: { ticks: { color: COR_TEXTO }, grid: { display: false } }
+            },
             plugins: {
                 legend: { display: false },
                 tooltip: {
                     callbacks: {
-                        label: function (c) { return c.label + ": " + c.parsed + (c.parsed === 1 ? " mês" : " meses"); }
+                        label: function (c) {
+                            var m = lista[c.dataIndex];
+                            return m.treinos + " de " + m.meta + " treinos (" + numeroBR(m.aproveitamento) + "%)";
+                        }
                     }
                 }
             }
@@ -180,6 +214,7 @@ function desenharSemanas(registros, metaAtual, hoje) {
     }
 
     graficoSemanas = new Chart(grafico_semanas.getContext("2d"), {
+        type: "bar",                      // tipo principal; a linha da meta é um dataset com type "line"
         data: {
             labels: rotulos,
             datasets: [
@@ -218,97 +253,9 @@ function desenharSemanas(registros, metaAtual, hoje) {
     });
 }
 
-// ---------- Jornada das faixas ----------
-var TEXTO_ESTADO = { concluida: "Concluída", atual: "Faixa atual", proxima: "Próxima", futura: "Futura" };
-
-function desenharJornada(r) {
-    jornada_sub.innerHTML = "perfil " + r.apelido;
-    var html = "";
-
-    r.jornada.forEach(function (f, i) {
-        var nome = NOMES_FAIXA[f.faixa];
-
-        // Linha conectora antes de cada faixa (menos a primeira)
-        if (i > 0) {
-            var anterior = r.jornada[i - 1];
-            var classeLinha = "conector futuro";
-            if (anterior.estado === "concluida") classeLinha = "conector";
-            else if (anterior.estado === "atual") classeLinha = "conector parcial";
-            html += '<div class="' + classeLinha + '" style="--pct:' + r.percentual + '"></div>';
-        }
-
-        // Texto informativo de cada estado
-        var info = "";
-        if (f.estado === "concluida") {
-            info = "&#10003; Conquistada";
-        } else if (f.estado === "atual") {
-            info = r.concluido ? "Objetivo alcançado!" : "Faltam " + numeroBR(r.faltam) + " treinos · ~" + numeroBR(r.mesesRestantes) + " meses";
-        } else if (f.estado === "proxima") {
-            info = numeroBR(f.treinos) + " treinos restantes";
-        } else {
-            info = numeroBR(f.treinos) + " treinos · ~" + numeroBR(f.meses) + " meses";
-        }
-
-        var data = f.dataPrevista ? '<div class="faixa-data">previsão ' + mesAnoBR(f.dataPrevista) + '</div>' : "";
-
-        var selo = "";
-        if (f.minimoIbjjfMeses) {
-            selo = '<span class="selo-ibjjf-mini' + (f.abaixoIbjjf ? " alerta" : "") + '">IBJJF mín. ' + f.minimoIbjjfMeses + ' m' +
-                (f.abaixoIbjjf ? " &#9888;" : "") + '</span>';
-        }
-
-        var graus = "";
-        if (f.estado === "atual" && !r.concluido) {
-            graus = '<div class="graus" title="Graus: acendem a cada 25% da faixa">';
-            for (var g = 1; g <= 4; g++) graus += '<i class="' + (g <= r.graus ? "on" : "") + '"></i>';
-            graus += '</div>';
-        }
-
-        var tooltip = montarTooltip(f, r);
-
-        html += '<div class="no-faixa ' + f.estado + '" tabindex="0" style="--pct:' + r.percentual + '">' +
-            (f.estado === "atual" ? '<span class="marcador-aqui">Você está aqui</span>' : "") +
-            '<div class="anel"><div class="faixa-cor ' + f.faixa + '">' + (f.estado === "atual" && !r.concluido ? Math.round(r.percentual) + "%" : "") + '</div></div>' +
-            '<div class="faixa-nome">' + nome + '</div>' +
-            '<div class="faixa-status">' + TEXTO_ESTADO[f.estado] + '</div>' +
-            graus +
-            '<div class="faixa-info">' + info + '</div>' + data + selo +
-            '<div class="tooltip-faixa">' + tooltip + '</div>' +
-        '</div>';
-    });
-
-    jornada.innerHTML = html;
-}
-
-function montarTooltip(f, r) {
-    var t = "<b>Faixa " + NOMES_FAIXA[f.faixa] + "</b><br>";
-    if (f.estado === "concluida") return t + "Você já conquistou esta faixa.";
-    if (f.estado === "atual") {
-        if (r.concluido) return t + "Fim da jornada. Parabéns!";
-        return t + numeroBR(r.treinosNaFaixa) + " de " + numeroBR(r.limiteAtual) + " treinos para a próxima faixa (" + numeroBR(r.percentual) + "%).";
-    }
-    if (f.estado === "proxima") t += "Faltam " + numeroBR(f.treinos) + " treinos (~" + numeroBR(f.meses) + " meses).<br>";
-    else t += numeroBR(f.treinos) + " treinos nesta etapa (~" + numeroBR(f.meses) + " meses).<br>";
-    t += "Previsão de chegada: " + mesAnoBR(f.dataPrevista) + ".";
-    if (f.minimoIbjjfMeses) {
-        t += "<br>Referência IBJJF: mínimo de " + f.minimoIbjjfMeses + " meses na faixa anterior" +
-            (f.abaixoIbjjf ? " (o seu perfil fica abaixo disso)" : "") + ".";
-    }
-    return t;
-}
-
-// ---------- Comparativo dos perfis ----------
-function desenharComparativoPerfis(perfis, meuPerfil) {
-    var maior = 0;
-    perfis.forEach(function (p) { if (p.totalMeses > maior) maior = p.totalMeses; });
-
-    var html = "";
-    perfis.forEach(function (p) {
-        html += '<div class="comp-linha' + (p.id === meuPerfil ? " meu" : "") + '">' +
-            '<div class="comp-nome"><b>' + p.nome + '</b><span>"' + p.apelido + '"</span></div>' +
-            '<div class="comp-barra"><div style="width:' + (p.totalMeses / maior * 100) + '%"></div></div>' +
-            '<div class="comp-valor">' + numeroBR(p.totalAnos) + ' anos · ' + numeroBR(p.totalTreinos) + ' treinos</div>' +
-        '</div>';
-    });
-    comparativo_perfis.innerHTML = html;
+// ---------- Totem da faixa ----------
+// Um círculo que muda de cor conforme a faixa atual (branca, azul, roxa, marrom, preta)
+function desenharTotem(r) {
+    totem_circulo.className = "totem-circulo " + r.faixaAtual;
+    totem_nome.innerHTML = "Faixa " + NOMES_FAIXA[r.faixaAtual].toLowerCase();
 }

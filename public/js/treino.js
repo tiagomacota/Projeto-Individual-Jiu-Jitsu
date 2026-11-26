@@ -7,32 +7,33 @@ var ID_USUARIO = sessionStorage.ID_USUARIO;
 var listaPerfis = [];          // fichas vindas de GET /perfis
 var praticante = null;         // dados salvos (null = ainda não escolheu perfil)
 var registrosPorSemana = {};   // { "2026-11-15": { treinos, metaSemanal } }
-var quantidadeSemanas = 8;     // quantas semanas aparecem na lista
+var mostrandoAnteriores = false; // false = só a semana atual; true = semana atual + 4 anteriores
+var SEMANAS_ANTERIORES = 4;    // regra do Progresso semanal (o servidor confere de novo)
 
 // ---------- Início ----------
 function iniciarTreino() {
     if (!ID_USUARIO) { limparSessao(); return; }
 
     input_nome.value = sessionStorage.NOME_USUARIO || "";
-    input_idade.addEventListener("input", avisarIdade);
 
-    Promise.all([
-        buscarJSON("/perfis"),
-        buscarJSON("/praticantes/" + ID_USUARIO)
-    ]).then(function (respostas) {
-        if (!respostas[0].ok) {
+    // 1º busca os perfis; quando chegarem, busca o praticante (um fetch de cada vez)
+    buscarJSON("/perfis").then(function (respPerfis) {
+        if (!respPerfis.ok) {
             perfis_grid.innerHTML = '<div class="estado-vazio">Não foi possível carregar os perfis.</div>';
             return;
         }
-        listaPerfis = respostas[0].dados;
-        if (respostas[1].ok) {
-            praticante = respostas[1].dados;
-            input_nome.value = praticante.nome;
-            input_idade.value = praticante.idade;
-            avisarIdade();
-        }
-        desenharPerfis();
-        atualizarSecaoSemanas();
+        listaPerfis = respPerfis.dados;
+
+        buscarJSON("/praticantes/" + ID_USUARIO).then(function (respPraticante) {
+            if (respPraticante.ok) {
+                praticante = respPraticante.dados;
+                input_nome.value = praticante.nome;
+                input_nascimento.value = praticante.dtNascimento;
+                avisarIdade();
+            }
+            desenharPerfis();
+            atualizarSecaoSemanas();
+        });
     }).catch(function (erro) {
         console.log(erro);
         perfis_grid.innerHTML = '<div class="estado-vazio">Erro de conexão com o servidor.</div>';
@@ -40,9 +41,18 @@ function iniciarTreino() {
 }
 
 // ---------- Dados pessoais ----------
+
+// Idade em anos a partir da data de nascimento (texto AAAA-MM-DD)
+function calcularIdade(nascimento) {
+    var hoje = hojeLocalISO();
+    var idade = Number(hoje.slice(0, 4)) - Number(nascimento.slice(0, 4));
+    if (hoje.slice(5) < nascimento.slice(5)) idade--;      // ainda não fez aniversário este ano
+    return idade;
+}
+
+// Chamada pelo onkeyup / onchange do campo de nascimento
 function avisarIdade() {
-    var idade = Number(input_idade.value);
-    if (input_idade.value !== "" && idade > 0 && idade < 16) {
+    if (input_nascimento.value !== "" && calcularIdade(input_nascimento.value) < 16) {
         msg_idade.className = "msg aviso";
         msg_idade.innerHTML = "Atenção: a IBJJF só reconhece a faixa azul a partir dos 16 anos. Você pode continuar normalmente.";
     } else {
@@ -51,17 +61,22 @@ function avisarIdade() {
     }
 }
 
-// Confere nome e idade. Devolve true se estiverem corretos.
+// Confere nome e data de nascimento. Devolve true se estiverem corretos.
 function validarDados() {
-    var idade = Number(input_idade.value);
     if (input_nome.value.trim() === "") {
         mostrarMsg(msg_dados, "erro", "Informe o seu nome.");
         input_nome.focus();
         return false;
     }
-    if (input_idade.value === "" || !Number.isInteger(idade) || idade < 1 || idade > 120) {
-        mostrarMsg(msg_dados, "erro", "Informe uma idade válida (número inteiro).");
-        input_idade.focus();
+    if (input_nascimento.value === "") {
+        mostrarMsg(msg_dados, "erro", "Informe a sua data de nascimento.");
+        input_nascimento.focus();
+        return false;
+    }
+    var idade = calcularIdade(input_nascimento.value);
+    if (idade < 1 || idade > 120) {
+        mostrarMsg(msg_dados, "erro", "Informe uma data de nascimento válida.");
+        input_nascimento.focus();
         return false;
     }
     return true;
@@ -85,25 +100,42 @@ function salvarDados() {
 }
 
 // ---------- Escolha do perfil ----------
+
+// Frase de cada perfil (o apelido vem do servidor, em p.apelido)
+var TEXTO_PROGRESSO = {
+    leve: "seu progresso é mais lento",
+    moderado: "seu progresso é constante",
+    arduo: "seu progresso é acelerado"
+};
+
+// Meses acumulados -> anos com 1 casa decimal (28 meses = "2,3 anos")
+function anosTexto(mesesAcumulados) {
+    var anos = Math.round(mesesAcumulados / 12 * 10) / 10;
+    return numeroBR(anos) + (anos === 1 ? " ano" : " anos");
+}
+
+// Monta: "você vai demorar ≈ 2,3 anos para a azul, 5,7 para a roxa, 9,1 para a marrom e 13,5 para a preta."
+function frasePrazos(transicoes) {
+    var partes = [];
+    transicoes.forEach(function (t, i) {
+        var anos = Math.round(t.mesesAcumulados / 12 * 10) / 10;
+        var valor = i === 0 ? "≈ " + anosTexto(t.mesesAcumulados) : numeroBR(anos);
+        partes.push(valor + " para a " + NOMES_FAIXA[t.faixaDestino].toLowerCase());
+    });
+    var ultima = partes.pop();
+    return partes.join(", ") + " e " + ultima + ".";
+}
+
 function desenharPerfis() {
     var html = "";
     listaPerfis.forEach(function (p) {
         var escolhido = praticante && praticante.perfil === p.id;
         var textoBotao = escolhido ? "Perfil atual" : (praticante ? "Trocar para este perfil" : "Escolher este perfil");
 
-        var alertas = "";
-        var linhas = "";
+        // bolinhas coloridas das faixas (só como enfeite da progressão)
+        var bolinhas = "";
         p.transicoes.forEach(function (t) {
-            linhas += '<tr>' +
-                '<td><span class="bolinha-faixa ' + t.faixaDestino + '"></span>' + NOMES_FAIXA[t.faixaDestino] + '</td>' +
-                '<td>' + tempoBR(t.mesesAcumulados) + '</td>' +
-                '<td>' + numeroBR(t.treinos) + '</td>' +
-                '<td>' + (t.minimoIbjjfAcumulado === null ? "—" : tempoBR(t.minimoIbjjfAcumulado)) + '</td>' +
-                '</tr>';
-            if (t.abaixoIbjjf) {
-                alertas += '<span class="alerta">&#9888; Etapa ' + NOMES_FAIXA[t.faixaOrigem] + ' &rarr; ' + NOMES_FAIXA[t.faixaDestino] +
-                    ' (' + t.meses + ' m): abaixo do mínimo IBJJF (' + t.minimoIbjjfMeses + ' m) para competição.</span>';
-            }
+            bolinhas += '<span class="bolinha-faixa ' + t.faixaDestino + '" title="' + NOMES_FAIXA[t.faixaDestino] + '"></span>';
         });
 
         html += '<article class="perfil-card' + (escolhido ? " selecionado" : "") + '">' +
@@ -115,26 +147,18 @@ function desenharPerfis() {
             '<p class="perfil-para-quem">' + p.paraQuem + '</p>' +
             '<dl class="ficha">' +
                 '<div class="ficha-linha"><dt>Rotina</dt><dd>' + p.diasSemana + ' dias por semana · ' + p.treinosDia + ' treino' + (p.treinosDia > 1 ? "s" : "") + ' por dia</dd></div>' +
-                '<div class="ficha-linha"><dt>Meta</dt><dd>' + p.metaSemanal + ' por semana · ' + p.metaMensal + ' por mês</dd></div>' +
-                '<div class="ficha-linha"><dt>Exigência</dt><dd>' + barras(p.exigencia) + p.exigencia + ' de 3</dd></div>' +
-                '<div class="ficha-linha"><dt>Velocidade</dt><dd>' + barras(p.velocidade) + p.velocidade + ' de 3</dd></div>' +
+                '<div class="ficha-linha"><dt>Meta</dt><dd>' + p.metaSemanal + ' treino' + (p.metaSemanal > 1 ? "s" : "") + ' por semana · ' + p.metaMensal + ' por mês</dd></div>' +
             '</dl>' +
-            '<table class="ficha-faixas">' +
-                '<thead><tr><th>Faixa</th><th>Tempo (acum.)</th><th>Treinos (etapa)</th><th>IBJJF mín.</th></tr></thead>' +
-                '<tbody>' + linhas + '</tbody>' +
-            '</table>' +
-            '<div class="ficha-total">&asymp; ' + numeroBR(p.totalTreinos) + ' treinos · ' + numeroBR(p.totalAnos) + ' anos até a preta</div>' +
-            '<div class="selo-ibjjf">Referência IBJJF: faixa branca sem tempo mínimo; mínimo de 54 meses até a preta e idade mínima de 19 anos. Apenas informativo, não altera os cálculos.' + alertas + '</div>' +
+            '<div class="ficha-progressao">' +
+                '<div class="progressao-bolinhas">' + bolinhas + '</div>' +
+                '<p><b>' + p.apelido + ':</b> ' + TEXTO_PROGRESSO[p.id] + ', você vai demorar ' + frasePrazos(p.transicoes) + '</p>' +
+                '<small>Tempo contado desde o início, na faixa branca.</small>' +
+            '</div>' +
+            '<div class="ref-ibjjf">Referências usadas: IBJJF</div>' +
             '<button class="btn-tas" ' + (escolhido ? "disabled" : "") + ' onclick="escolherPerfil(\'' + p.id + '\')">' + textoBotao + '</button>' +
         '</article>';
     });
     perfis_grid.innerHTML = html;
-}
-
-function barras(nivel) {
-    var html = '<span class="barras">';
-    for (var i = 1; i <= 3; i++) html += '<i class="' + (i <= nivel ? "on" : "") + '"></i>';
-    return html + '</span>';
 }
 
 function escolherPerfil(idPerfil) {
@@ -156,11 +180,11 @@ function enviarPerfil(idPerfil, elementoMsg) {
             idUsuarioServer: ID_USUARIO,
             nomeServer: input_nome.value.trim(),
             perfilServer: idPerfil,
-            idadeServer: Number(input_idade.value)
+            dtNascimentoServer: input_nascimento.value
         })
     }).then(function (resposta) {
         if (resposta.ok) {
-            praticante = { nome: input_nome.value.trim(), perfil: idPerfil, idade: Number(input_idade.value) };
+            praticante = { nome: input_nome.value.trim(), perfil: idPerfil, dtNascimento: input_nascimento.value };
             sessionStorage.NOME_USUARIO = praticante.nome;
             b_usuario.innerHTML = escapar(praticante.nome);
             desenharPerfis();
@@ -185,7 +209,7 @@ function atualizarSecaoSemanas() {
     }
     secao_semanas.style.display = "block";
 
-    buscarJSON("/treinos/semanas/" + ID_USUARIO + "?limite=104").then(function (resp) {
+    buscarJSON("/treinos/semanas/" + ID_USUARIO + "?limite=12").then(function (resp) {
         registrosPorSemana = {};
         if (resp.ok) {
             resp.dados.forEach(function (r) {
@@ -203,9 +227,15 @@ function metaDoPerfilAtual() {
     return 0;
 }
 
+var semanasTela = [];   // semanasTela[i] = { inicio: "AAAA-MM-DD", meta: 4 }  (uma linha da tela)
+
 function desenharSemanas() {
     var domingoAtual = domingoDe(hojeLocalISO());
     var html = "";
+    semanasTela = [];
+
+    // Só a semana atual; com "Semanas anteriores" aberto, soma as 4 semanas anteriores
+    var quantidadeSemanas = mostrandoAnteriores ? 1 + SEMANAS_ANTERIORES : 1;
 
     for (var i = 0; i < quantidadeSemanas; i++) {
         var inicio = somarDiasISO(domingoAtual, -7 * i);
@@ -213,19 +243,20 @@ function desenharSemanas() {
         var reg = registrosPorSemana[inicio];
         var meta = reg ? reg.metaSemanal : metaDoPerfilAtual();
         var valor = reg ? reg.treinos : "";
+        semanasTela.push({ inicio: inicio, meta: meta });
 
-        html += '<div class="semana-linha' + (i === 0 ? " atual" : "") + '" data-inicio="' + inicio + '" data-meta="' + meta + '">' +
+        html += '<div class="semana-linha' + (i === 0 ? " atual" : "") + '">' +
             '<div class="semana-rotulo">Treinos na semana (' + dataBR(inicio) + ' – ' + dataBR(fim) + '):' +
                 (i === 0 ? '<span class="tag-atual">Semana atual</span>' : '') + '</div>' +
-            '<input type="number" min="0" max="21" value="' + valor + '" oninput="atualizarPercentual(this)">' +
-            '<button class="btn-tas secundario" onclick="salvarSemana(this)">Salvar</button>' +
-            '<div class="semana-meta">— a meta ' + (i === 0 ? "é" : "era") + ' <b>' + meta + '</b> — você bateu <span class="pct">' +
-                textoPercentual(valor, meta) + '</span><span class="ok-registro">' + (reg ? "&#10003; registrado" : "") + '</span></div>' +
-            '<div class="semana-aviso msg"></div>' +
+            '<input type="number" min="0" max="21" id="input_semana_' + i + '" value="' + valor + '" onkeyup="atualizarPercentual(' + i + ')">' +
+            '<button class="btn-tas secundario" onclick="salvarSemana(' + i + ')">Salvar</button>' +
+            '<div class="semana-meta">— a meta ' + (i === 0 ? "é" : "era") + ' <b>' + meta + '</b> — você bateu <span class="pct" id="pct_semana_' + i + '">' +
+                textoPercentual(valor, meta) + '</span><span class="ok-registro" id="ok_semana_' + i + '">' + (reg ? "&#10003; registrado" : "") + '</span></div>' +
+            '<div class="semana-aviso msg" id="aviso_semana_' + i + '"></div>' +
         '</div>';
     }
     lista_semanas.innerHTML = html;
-    btn_mais_semanas.style.display = quantidadeSemanas >= 52 ? "none" : "inline-block";
+    btn_mais_semanas.innerHTML = mostrandoAnteriores ? "Ocultar semanas anteriores" : "Semanas anteriores (últimas " + SEMANAS_ANTERIORES + ")";
 }
 
 function textoPercentual(valor, meta) {
@@ -233,16 +264,16 @@ function textoPercentual(valor, meta) {
     return Math.round(Number(valor) / meta * 100) + "%";
 }
 
-// Atualiza o "bateu Y%" enquanto o usuário digita
-function atualizarPercentual(input) {
-    var linha = input.parentElement;
-    linha.querySelector(".pct").innerHTML = textoPercentual(input.value, Number(linha.dataset.meta));
+// Atualiza o "bateu Y%" enquanto o usuário digita (onkeyup do campo da linha i)
+function atualizarPercentual(i) {
+    document.getElementById("pct_semana_" + i).innerHTML = textoPercentual(document.getElementById("input_semana_" + i).value, semanasTela[i].meta);
 }
 
-function salvarSemana(botao) {
-    var linha = botao.parentElement;
-    var input = linha.querySelector("input");
-    var aviso = linha.querySelector(".semana-aviso");
+// Botão "Salvar" da linha i
+function salvarSemana(i) {
+    var input = document.getElementById("input_semana_" + i);
+    var aviso = document.getElementById("aviso_semana_" + i);
+    var inicio = semanasTela[i].inicio;
     var treinos = Number(input.value);
 
     if (input.value === "" || !Number.isInteger(treinos) || treinos < 0 || treinos > 21) {
@@ -255,16 +286,16 @@ function salvarSemana(botao) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             idUsuarioServer: ID_USUARIO,
-            semanaInicioServer: linha.dataset.inicio,
+            semanaInicioServer: inicio,
             treinosServer: treinos,
             hojeServer: hojeLocalISO()
         })
     }).then(function (resposta) {
         if (resposta.ok) {
             // atualiza a memória local e o texto da linha
-            var antigo = registrosPorSemana[linha.dataset.inicio];
-            registrosPorSemana[linha.dataset.inicio] = { treinos: treinos, metaSemanal: antigo ? antigo.metaSemanal : metaDoPerfilAtual() };
-            linha.querySelector(".ok-registro").innerHTML = "&#10003; registrado";
+            var antigo = registrosPorSemana[inicio];
+            registrosPorSemana[inicio] = { treinos: treinos, metaSemanal: antigo ? antigo.metaSemanal : metaDoPerfilAtual() };
+            document.getElementById("ok_semana_" + i).innerHTML = "&#10003; registrado";
             mostrarMsg(aviso, "ok", 'Semana salva! <a class="link-mural" href="mural.html">Ver no Mural &rarr;</a>');
         } else {
             resposta.text().then(function (texto) { mostrarMsg(aviso, "erro", escapar(texto)); });
@@ -275,7 +306,8 @@ function salvarSemana(botao) {
     });
 }
 
-function mostrarMaisSemanas() {
-    quantidadeSemanas = Math.min(52, quantidadeSemanas + 4);
+// Botão "Semanas anteriores": abre e fecha a lista das últimas 4 semanas
+function alternarSemanasAnteriores() {
+    mostrandoAnteriores = !mostrandoAnteriores;
     desenharSemanas();
 }

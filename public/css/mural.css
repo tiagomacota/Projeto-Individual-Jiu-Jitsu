@@ -64,182 +64,52 @@
 
 .canvas-barras { position: relative; height: 300px; }
 
-.rosca-area { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; justify-content: center; }
-.canvas-rosca { position: relative; width: 220px; height: 220px; }
+/* ---------- Aproveitamento mensal (barras horizontais) ---------- */
+.rolagem-barras { max-height: 380px; overflow-y: auto; }
+.canvas-barras-h { position: relative; width: 100%; }
 
-.legenda-rosca { list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 0.92rem; }
-.legenda-rosca li { display: flex; align-items: center; gap: 8px; }
-.legenda-rosca .quad { width: 12px; height: 12px; border-radius: 3px; flex: none; }
-.legenda-rosca b { margin-left: auto; padding-left: 12px; color: #fff; }
-
-/* ---------- Jornada das faixas ---------- */
-.jornada {
+.legenda-cores {
+  list-style: none;
   display: flex;
-  align-items: flex-start;
-  padding: 36px 4px 10px;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  margin-top: 14px;
+  font-size: 0.88rem;
 }
+.legenda-cores li { display: flex; align-items: center; gap: 8px; }
+.legenda-cores .quad { width: 12px; height: 12px; border-radius: 3px; flex: none; }
+.legenda-cores b { color: #fff; }
 
-.no-faixa {
-  position: relative;
-  flex: 0 0 150px;
+/* ---------- Totem da faixa ---------- */
+.totem {
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
-  gap: 6px;
-  outline: none;
+  gap: 14px;
+  padding: 10px 0 6px;
 }
 
-/* Anel de progresso ao redor da faixa atual */
-.anel {
-  width: 76px; height: 76px;
+.totem-circulo {
+  width: 120px; height: 120px;
   border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  background: #2a2a2a;
+  border: 4px solid #0b0b0b;
+  box-shadow: 0 0 0 3px #2a2a2a, 0 8px 24px rgba(0, 0, 0, 0.6);
 }
 
-.no-faixa.atual .anel {
-  background: conic-gradient(var(--verde) calc(var(--pct) * 1%), #2a2a2a 0);
-}
+.totem-circulo.branca { background: #f5f5f5; }
+.totem-circulo.azul { background: var(--azul-faixa); }
+.totem-circulo.roxa { background: var(--roxa-faixa); }
+.totem-circulo.marrom { background: var(--marrom-faixa); }
+.totem-circulo.preta { background: #000; box-shadow: 0 0 0 3px var(--dourado-titulo), 0 8px 24px rgba(0, 0, 0, 0.6); }
 
-.no-faixa.concluida .anel { background: var(--verde); }
-
-.faixa-cor {
-  width: 58px; height: 58px;
-  border-radius: 50%;
-  border: 3px solid #0b0b0b;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 800; color: #fff; font-size: 1.2rem;
-}
-
-.faixa-cor.branca { background: #f5f5f5; color: #111; }
-.faixa-cor.azul { background: var(--azul-faixa); }
-.faixa-cor.roxa { background: var(--roxa-faixa); }
-.faixa-cor.marrom { background: var(--marrom-faixa); }
-.faixa-cor.preta { background: #000; box-shadow: inset 0 0 0 2px var(--dourado-titulo); }
-
-.no-faixa:not(.atual):not(.concluida) .faixa-cor { opacity: 0.75; }
-
-.marcador-aqui {
-  position: absolute;
-  top: -30px;
-  font-size: 0.68rem;
+.totem-nome {
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  color: #111;
-  background: var(--dourado-titulo);
-  padding: 3px 9px;
-  border-radius: 12px;
+  letter-spacing: 2px;
+  font-size: 1.05rem;
 }
-
-.marcador-aqui::after {
-  content: "";
-  position: absolute;
-  left: 50%; bottom: -5px;
-  transform: translateX(-50%);
-  border: 5px solid transparent;
-  border-bottom: 0;
-  border-top-color: var(--dourado-titulo);
-}
-
-.faixa-nome { font-weight: 800; text-transform: uppercase; letter-spacing: 1px; font-size: 0.95rem; }
-.faixa-status { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--texto-suave); }
-.no-faixa.atual .faixa-status { color: var(--verde); font-weight: 700; }
-.faixa-info { font-size: 0.82rem; line-height: 1.4; color: var(--cor-areia); }
-.faixa-data { font-size: 0.78rem; color: var(--dourado-titulo); }
-
-.selo-ibjjf-mini {
-  font-size: 0.68rem;
-  color: var(--texto-suave);
-  border: 1px solid #3a3a3a;
-  border-radius: 10px;
-  padding: 2px 8px;
-}
-.selo-ibjjf-mini.alerta { color: var(--amarelo); border-color: var(--amarelo); }
-
-/* Graus (stripes) da faixa atual */
-.graus { display: flex; gap: 4px; }
-.graus i { width: 8px; height: 22px; border-radius: 2px; background: #3a3a3a; }
-.graus i.on { background: var(--dourado-titulo); }
-
-/* Linha conectora: cheia até o ponto atual e tracejada nas faixas futuras */
-.conector {
-  flex: 1 1 20px;
-  min-width: 20px;
-  margin-top: 37px;
-  height: 0;
-  border-top: 3px solid var(--verde);
-  position: relative;
-}
-
-.conector.futuro { border-top: 3px dashed #4a4a4a; }
-
-.conector.parcial {
-  border-top: 3px dashed #4a4a4a;
-}
-.conector.parcial::before {
-  content: "";
-  position: absolute;
-  left: 0; top: -3px;
-  width: calc(var(--pct) * 1%);
-  border-top: 3px solid var(--verde);
-}
-
-/* Tooltip ao passar o mouse / focar */
-.tooltip-faixa {
-  display: none;
-  position: absolute;
-  top: 92px;
-  z-index: 10;
-  width: 210px;
-  background: #1a1a1a;
-  border: 1px solid var(--dourado-titulo);
-  border-radius: 8px;
-  padding: 10px 12px;
-  font-size: 0.8rem;
-  line-height: 1.45;
-  text-align: left;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
-}
-
-.no-faixa:hover .tooltip-faixa,
-.no-faixa:focus .tooltip-faixa { display: block; }
-
-.jornada-nota { margin-top: 18px; font-size: 0.82rem; color: var(--texto-suave); }
-
-/* ---------- Comparativo de perfis ---------- */
-.comp-linha {
-  display: grid;
-  grid-template-columns: 220px 1fr 220px;
-  align-items: center;
-  gap: 16px;
-  padding: 8px 0;
-}
-
-.comp-nome b { display: block; }
-.comp-nome span { font-size: 0.82rem; color: var(--texto-suave); font-style: italic; }
-.comp-barra { height: 14px; background: #2a2a2a; border-radius: 7px; overflow: hidden; }
-.comp-barra div { height: 100%; background: #6b6256; border-radius: 7px; }
-.comp-linha.meu .comp-barra div { background: var(--dourado-titulo); }
-.comp-linha.meu .comp-nome b::after { content: " (você)"; color: var(--dourado-titulo); font-weight: 600; }
-.comp-valor { font-size: 0.88rem; color: var(--cor-areia); }
 
 /* ---------- Responsivo ---------- */
 @media (max-width: 1250px) {
   .kpi-row, .graficos-row { grid-template-columns: 1fr; }
-}
-
-@media (max-width: 800px) {
-  /* Jornada vertical no celular */
-  .jornada { flex-direction: column; align-items: stretch; padding-top: 10px; }
-  .no-faixa { flex: none; flex-direction: row; text-align: left; align-items: center; flex-wrap: wrap; gap: 4px 14px; }
-  .no-faixa .anel { flex: none; }
-  .marcador-aqui { position: static; order: 5; }
-  .marcador-aqui::after { display: none; }
-  .conector { flex: none; width: 0; height: 28px; min-height: 28px; margin: 0 0 0 37px; border-top: 0; border-left: 3px solid var(--verde); }
-  .conector.futuro, .conector.parcial { border-left: 3px dashed #4a4a4a; }
-  .conector.parcial::before { border-top: 0; border-left: 3px solid var(--verde); width: 0; height: calc(var(--pct) * 1%); top: 0; left: -3px; }
-  .tooltip-faixa { top: 80px; left: 90px; }
-  .comp-linha { grid-template-columns: 1fr; gap: 4px; }
 }

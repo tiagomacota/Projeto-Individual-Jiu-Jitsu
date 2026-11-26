@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TAS | Bem-vindo</title>
+
+    <script src="../js/sessao.js"></script>
+
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/painel.css">
+    <link rel="stylesheet" href="../css/bemvindo.css">
+    <link rel="icon" href="../assets/icon/favicon2.ico">
+</head>
+
+<body class="painel-body" onload="validarSessao();">
+
+    <div class="painel-layout">
+
+    <!-- Menu lateral -->
+    <aside class="sidebar">
+        <nav class="sidebar-menu">
+            <a href="../index.html" class="sidebar-logo">
+                <img src="../assets/imgs/logotipo.png" alt="Logo TAS" class="logo-image">
+            </a>
+            <a href="bemvindo.html" class="sidebar-item ativo">Bem-vindo</a>
+            <a href="treino.html" class="sidebar-item">Treino</a>
+            <a href="mural.html" class="sidebar-item">Mural</a>
+            <div class="sidebar-user">
+                <span>Olá,</span>
+                <strong id="b_usuario">usuário</strong>
+            </div>
+            <a href="#" class="sidebar-item sair" onclick="limparSessao(); return false;">Sair</a>
+        </nav>
+    </aside>
+
+    <main class="painel-main">
+
+        <div class="painel-titulo">
+            <h1>Bem-vindo ao templo, OSS!</h1>
+            <p>Obrigado por fazer parte do templo. Aqui você acompanha, semana a semana, como está a sua evolução no
+                Jiu-Jitsu. Veja como tudo funciona.</p>
+        </div>
+
+        <!-- 1. A lógica, em passos -->
+        <section class="painel-card">
+            <h2>Como funciona <small>em 4 passos</small></h2>
+            <ol class="passos">
+                <li class="passo atual">
+                    <span class="passo-num">1</span>
+                    <h3>Bem-vindo</h3>
+                    <p>Você está aqui. Entenda a lógica antes de começar.</p>
+                </li>
+                <li class="passo">
+                    <span class="passo-num">2</span>
+                    <h3>Treino: escolha o perfil</h3>
+                    <p>Como entusiasta, você escolhe na aba <a href="treino.html">Treino</a> o perfil que combina com a
+                        sua rotina: Leve, Moderado ou Árduo.</p>
+                </li>
+                <li class="passo">
+                    <span class="passo-num">3</span>
+                    <h3>Registre a semana</h3>
+                    <p>Ainda na aba Treino, você informa quantos treinos fez na semana.</p>
+                </li>
+                <li class="passo">
+                    <span class="passo-num">4</span>
+                    <h3>Mural: veja a evolução</h3>
+                    <p>O <a href="mural.html">Mural</a> transforma os seus registros em faixa, metas e gráficos.</p>
+                </li>
+            </ol>
+        </section>
+    </main>
+
+    </div>
+
+    <footer class="footer-tas footer-frase">
+        <p class="frase">“Com o Jiu-Jitsu aprendi, sobretudo, a grande lição, que foi a de me conhecer profundamente.”</p>
+        <span class="frase-autor">— Carlos Gracie</span>
+    </footer>
+
+</body>
+
+</html>

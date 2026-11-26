@@ -8,7 +8,8 @@
 .cadastro {
   min-height: calc(100vh - var(--tamanho-header) - var(--tamanho-footer));
   background-size: cover;
-  background-position: center center;
+  /* "top": mostra a parte de cima da foto, para o rosto aparecer (antes era center center) */
+  background-position: 30% top;
   background-repeat: no-repeat;
   display: flex;
   align-items: center;
@@ -126,6 +127,13 @@
   background-color: #b0232a;
 }
 
+/* Botão travado (login bloqueado depois das 4 tentativas) */
+.botao:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #5a1015;
+}
+
 /* Alertas de erro e loading */
 .alerta_erro {
   display: flex;
@@ -162,4 +170,21 @@
 
 #div_erros_login {
   display: none;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.lista-tentativas {
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #ffb3b8;
+}
+
+.lista-tentativas b { color: #fff; }
+
+/* Frase do Carlos Gracie no rodapé vermelho */
+.frase-autor-inline {
+  white-space: nowrap;
+  opacity: 0.85;
 }
