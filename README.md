@@ -1,31 +1,16 @@
-# Projeto Individual - Templo da Arte Suave
+﻿Projeto Individual - Templo da Arte Suave
+Aplicação web voltada ao Jiu-Jitsu brasileiro, abordando seus fundamentos técnicos, sua filosofia e os benefícios da prática para o desenvolvimento pessoal.
+O projeto apresenta três pilares da arte suave:
+• Defender: Desenvolver uma defesa eficiente e utilizar a técnica em vez da força.
+• Controlar: Dominar posições, movimentações e estratégias.
+• Atacar: Aplicar técnicas de finalização com precisão.
+Além da parte técnica, o projeto destaca valores como disciplina, superação, autocontrole e inteligência emocional.
+Tecnologias utilizadas
+• HTML5
+• CSS3
+• JavaScript
+• Chart.js
+Como executar
+git clone https://github.com/tiagomacota/Projeto-Individual-Jiu-Jitsu.git
+Abra o arquivo index.html no navegador.
 
-Este projeto é uma aplicação web focada no ensino e na filosofia do Jiu-Jitsu brasileiro. Mais do que uma arte marcial, o projeto traduz a premissa de **"Técnica Máxima, Esforço Mínimo"** e o desenvolvimento socioemocional que o tatame exige de cada praticante.
-
-## 🧠 A Dimensão Socioemocional e o Tatame
-
-Antes de qualquer golpe aplicado no adversário, o jiu-jitsu exige uma relação brutal e honesta consigo mesmo. No tatame, a máscara social cai: não há como fingir calma quando o ar falta ou terceirizar a responsabilidade quando a pressão aperta. 
-
-* **Neutralização do Ego**: O primeiro adversário a ser batido é o ego. Aceitar a vulnerabilidade, errar repetidamente e ser finalizado sem que isso destrua a identidade é o cerne do crescimento.
-* **Inteligência Emocional sob Pressão**: Cada sufoco transforma-se em dado técnico. A prática treina a mente para reconhecer limites, respirar no caos e manter a clareza quando o instinto pede pânico.
-
-## 🥋 Os Pilares da Arte Suave
-
-O site organiza a jornada técnica e filosófica em três pilares essenciais:
-
-* **Defender**: A base inegociável. A prioridade absoluta é neutralizar o ímpeto e a agressividade através de uma defesa sólida, onde a eficiência técnica substitui a força bruta.
-* **Controlar**: O domínio estratégico do espaço e do posicionamento. A gestão de pegadas e do centro de gravidade dita o ritmo do combate sem desperdício de energia.
-* **Atacar**: A conclusão natural da técnica aplicada com precisão. A finalização surge como consequência direta de uma defesa sólida e de um controle rígido.
-
-## 🛠️ Tecnologias Utilizadas
-
-* HTML5
-* CSS3
-* JavaScript
-* Chart.js
-
-## 🚀 Como Executar o Projeto
-
-1. Clona o repositório:
-   ```bash
-   git clone [https://github.com/tiagomacota/Projeto-Individual-Jiu-Jitsu.git](https://github.com/tiagomacota/Projeto-Individual-Jiu-Jitsu.git)
